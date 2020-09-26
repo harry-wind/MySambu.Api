@@ -20,7 +20,7 @@ namespace MySambu.Api.Repositorys.implements
             // _transaction = transaction;
         }
 
-        public Task<int> Delete(Log obj)
+        public Task Delete(Log obj)
         {
             throw new System.NotImplementedException();
         }
@@ -30,23 +30,12 @@ namespace MySambu.Api.Repositorys.implements
             throw new System.NotImplementedException();
         }
 
-        public async Task<int> Save(Log obj)
+        public async Task Save(Log obj)
         {
-            var result = 0;
-
-            try
-            {
-                await Connection.InsertAsync<Log>(obj, transaction:Transaction);
-                result = 1;
-            }
-            catch
-            {
-            }
-
-            return result;
+            await Connection.InsertAsync<Log>(obj, transaction:Transaction);
         }
 
-        public Task<int> Update(Log obj)
+        public Task Update(Log obj)
         {
             throw new System.NotImplementedException();
         }

@@ -10,11 +10,9 @@ namespace MySambu.Api.Repositorys.implements
     internal class AuthRepository : BaseRepository, IAuthRepository
     {
         // private IDbTransaction _transaction;
-        private ILog _log;
-        public AuthRepository(IDbTransaction transaction, ILog log) : base(transaction)
+        public AuthRepository(IDbTransaction transaction) : base(transaction)
         {
             // _transaction = transaction;
-            _log = log;
         }
 
         public Task<bool> ChangePassword(string username, string passwordold, string passwordnew)
@@ -22,7 +20,7 @@ namespace MySambu.Api.Repositorys.implements
             throw new System.NotImplementedException();
         }
 
-        public Task<int> Delete(User obj)
+        public Task Delete(User obj)
         {
             throw new System.NotImplementedException();
         }
@@ -42,12 +40,12 @@ namespace MySambu.Api.Repositorys.implements
             throw new System.NotImplementedException();
         }
 
-        public Task<int> Save(User obj)
+        public Task Save(User obj)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<int> Update(User obj)
+        public Task Update(User obj)
         {
             throw new System.NotImplementedException();
         }

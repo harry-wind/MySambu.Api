@@ -5,9 +5,9 @@ namespace MySambu.Api.Repositorys.Interfaces
 {
     public interface IBaseRepository<T> where T : class
     {
-        Task<int> Save(T obj);
-        Task<int> Update(T obj);
-        Task<int> Delete(T obj);
+        Task Save(T obj);
+        Task Update(T obj);
+        Task Delete(T obj);
         Task<IEnumerable<T>> GetAll();
     }
 }

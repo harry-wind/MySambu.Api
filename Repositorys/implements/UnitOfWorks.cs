@@ -12,25 +12,35 @@ namespace MySambu.Api.Repositorys.implements
     {
         private IConfiguration _configuration;
         private IDbConnection _connection;
-        private ILog _log;
+        // private ILog _log;
         private IDbTransaction _transaction;
         private bool _disposed;
         private IAuthRepository _authRepository;
         private ILog4NetRepository _log4NetRepository;
+        private ISupplierRepository _supplierRepository;
 
         public IAuthRepository AuthRepository {
-            get { return _authRepository ?? (_authRepository = new AuthRepository(_transaction, _log)); }
+            get { return _authRepository ?? (_authRepository = new AuthRepository(_transaction)); }
         }
 
         public ILog4NetRepository Log4NetRepository {
              get { return _log4NetRepository ?? (_log4NetRepository = new Log4NetRepository(_transaction)); }
-        }        
+        }
+
+        public ISupplierRepository SupplierRepository {
+            get { return _supplierRepository ?? (_supplierRepository = new SupplierRepository(_transaction)); }
+        }
+
         public UnitOfWorks(IConfiguration configuration)
         {
             _configuration = configuration;
             if(_connection == null){
                 _connection = GetOpenConnection();
+                _connection.Open();
+                _transaction = _connection.BeginTransaction();
             }
+
+           
         }
 
         private IDbConnection GetOpenConnection()
@@ -42,8 +52,8 @@ namespace MySambu.Api.Repositorys.implements
                 // cari di nuget
                 SqlClientFactory provider = SqlClientFactory.Instance; 
                 conn = provider.CreateConnection();
-                // string _constring = "Data Source=192.168.12.60; Initial Catalog=DocumentDB; User ID=sa; Password=123; MultipleActiveResultSets=True;";
-                string _constring = "Data Source=(local); Initial Catalog=DocumentDB; User ID=sa; Password=123; MultipleActiveResultSets=True;";
+                string _constring = "Data Source=192.168.12.5; Initial Catalog=SambuERP; User ID=uKoneksi; Password=sm@rt2018; MultipleActiveResultSets=True;";
+                // string _constring = "Data Source=(local); Initial Catalog=DocumentDB; User ID=sa; Password=123; MultipleActiveResultSets=True;";
                 conn.ConnectionString = _constring;
             }
             catch (System.Exception)
@@ -75,7 +85,8 @@ namespace MySambu.Api.Repositorys.implements
 
         private void resetRepository()
         {
-            
+            _authRepository = null;
+            _supplierRepository = null;
         }
 
         public void Dispose(){

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using log4net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -17,6 +18,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using MySambu.Api.Repositorys.implements;
+using MySambu.Api.Repositorys.Interfaces;
 using Newtonsoft.Json.Serialization;
 
 namespace MySambu.Api
@@ -34,7 +37,8 @@ namespace MySambu.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            // services.AddSingleton<IUnitOfWorks, UnitOfWorks>();
+            services.AddSingleton<IUnitOfWorks, UnitOfWorks>();
+            // services.AddSingleton<ILog4NetRepository, Log4NetRepository>();
             services.AddCors(option => option.AddPolicy("CorsPolicy", builder => {
                 builder.WithOrigins("http://example.com", "http://facebook.com", "http://darimana.com")
                     .AllowAnyMethod()
@@ -67,7 +71,10 @@ namespace MySambu.Api
                 });
             });
 
+            // services.AddScoped<IUnitOfWorks, CountryRepositoryGUI>();
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            // services.AddSingleton<ILog, ILog>();
             services.AddControllers(
                 opt => {
                     var policy = new AuthorizationPolicyBuilder()

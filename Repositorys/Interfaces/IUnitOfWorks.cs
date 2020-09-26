@@ -4,6 +4,7 @@ namespace MySambu.Api.Repositorys.Interfaces
     {
         ILog4NetRepository Log4NetRepository { get; }
         IAuthRepository AuthRepository { get; }
+        ISupplierRepository SupplierRepository { get; }
         void Commit();
         void Rollback();
          
