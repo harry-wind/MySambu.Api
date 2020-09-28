@@ -4,7 +4,9 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using log4net;
 using Microsoft.Extensions.Configuration;
+using MySambu.Api.Repositorys.implements.Master;
 using MySambu.Api.Repositorys.Interfaces;
+using MySambu.Api.Repositorys.Interfaces.Master;
 
 namespace MySambu.Api.Repositorys.implements
 {
@@ -18,6 +20,7 @@ namespace MySambu.Api.Repositorys.implements
         private IAuthRepository _authRepository;
         private ILog4NetRepository _log4NetRepository;
         private ISupplierRepository _supplierRepository;
+        private IOrganizationStructureRepository _organizationRepository;
 
         public IAuthRepository AuthRepository {
             get { return _authRepository ?? (_authRepository = new AuthRepository(_transaction)); }
@@ -29,6 +32,10 @@ namespace MySambu.Api.Repositorys.implements
 
         public ISupplierRepository SupplierRepository {
             get { return _supplierRepository ?? (_supplierRepository = new SupplierRepository(_transaction)); }
+        }
+
+        public IOrganizationStructureRepository OrganizationStructure {
+            get { return _organizationRepository ?? (_organizationRepository = new OrganizationStructureRepository(_transaction)); }
         }
 
         public UnitOfWorks(IConfiguration configuration)
