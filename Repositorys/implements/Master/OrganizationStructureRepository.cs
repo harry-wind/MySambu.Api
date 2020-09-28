@@ -7,12 +7,13 @@ using Dapper.Contrib.Extensions;
 
 namespace MySambu.Api.Repositorys.implements.Master
 {
-    public class OrganizationStructureRepository : BaseRepository, IOrganizationStructure
+    public class OrganizationStructureRepository : BaseRepository, IOrganizationStructureRepository
     {
         public OrganizationStructureRepository(IDbTransaction transaction) : base(transaction)
         {
             
         }
+        
         public Task Delete(OrganizationStructure obj)
         {
             throw new System.NotImplementedException();
