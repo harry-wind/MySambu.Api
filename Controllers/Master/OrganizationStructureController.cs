@@ -6,7 +6,7 @@ using MySambu.Api.Repositorys.Interfaces;
 
 namespace MySambu.Api.Controllers.Master
 {
-    [Route("apimysambu/[controller]")]
+    [Route("apimysambu/orgs")]
     [ApiController]
     public class OrganizationStructureController : ControllerBase
     {
@@ -23,6 +23,38 @@ namespace MySambu.Api.Controllers.Master
         public async Task<IActionResult> OrganizationStructure()
         {
             var result = await _uow.OrganizationStructure.GetAll();
+            return Ok(result);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("list_company")]
+        public async Task<IActionResult> GetListCompany()
+        {
+            var result = await _uow.OrganizationStructure.GetListCompany();
+            return Ok(result);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("list_div/{companyid}")]
+        public async Task<IActionResult> GetListDivision(int companyid)
+        {
+            var result = await _uow.OrganizationStructure.GetListDivision(companyid);
+            return Ok(result);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("list_dept/{companyid}")]
+        public async Task<IActionResult> GetListDepartment(int companyid)
+        {
+            var result = await _uow.OrganizationStructure.GetListDept(companyid);
+            return Ok(result);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("list_subdept/{companyid}")]
+        public async Task<IActionResult> GetListSubDepartment(int companyid)
+        {
+            var result = await _uow.OrganizationStructure.GetListSubDept(companyid);
             return Ok(result);
         }
     }
