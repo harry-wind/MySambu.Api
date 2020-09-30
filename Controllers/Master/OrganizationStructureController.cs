@@ -1,7 +1,10 @@
+using System;
 using System.Threading.Tasks;
+using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using MySambu.Api.Models.Master;
 using MySambu.Api.Repositorys.Interfaces;
 
 namespace MySambu.Api.Controllers.Master
@@ -10,6 +13,7 @@ namespace MySambu.Api.Controllers.Master
     [ApiController]
     public class OrganizationStructureController : ControllerBase
     {
+        private static readonly ILog _log = LogManager.GetLogger(typeof(OrganizationStructure));
         private readonly IUnitOfWorks _uow; 
         private readonly IConfiguration _config;
         public OrganizationStructureController(IUnitOfWorks uow, IConfiguration config)
@@ -23,6 +27,106 @@ namespace MySambu.Api.Controllers.Master
         public async Task<IActionResult> OrganizationStructure()
         {
             var result = await _uow.OrganizationStructure.GetAll();
+            return Ok(result);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("save")]
+        public async Task<IActionResult> SaveOrganizationStructure(OrganizationStructure organization)
+        {
+            try
+            {
+                var org = new OrganizationStructure {
+                    StructureName = organization.StructureName.ToString(),
+                    StructureAbbr = organization.StructureAbbr.ToString(),
+                    StructureParentId = organization.StructureParentId,
+                    StructureLevel = organization.StructureLevel,
+                    StructureOrder = organization.StructureOrder,
+                    IsActive = organization.IsActive,
+                    OldId = 0,
+                    CreatedBy = "System"
+                };
+
+                await _uow.OrganizationStructure.Save(org);
+                _uow.Commit();
+                _log.Info("Save Success");
+
+                return Ok(
+                    new {
+                        statusResult = "Success",
+                        messageResult = "Saving Organization Structure Success",
+                        structureId = org.StructureId
+                    }
+                );
+            }
+            catch (System.Exception ex)
+            {
+                _uow.Rollback();
+                var err = ex.Message.ToString();
+                _log.Error("Error : ", ex);
+
+                return BadRequest(new{
+                    statusResult = "Failed",
+                    messageResult = err,
+                    structureId = 0
+                });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPut("update/{structureId}")]
+        public async Task<IActionResult> UpdateOrganizationStructure(OrganizationStructure organization, int structureId)
+        {
+            try
+            {
+                var org = new OrganizationStructure {
+                    StructureId = structureId,
+                    StructureName = organization.StructureName.ToString(),
+                    StructureAbbr = organization.StructureAbbr.ToString(),
+                    StructureParentId = organization.StructureParentId,
+                    StructureLevel = organization.StructureLevel,
+                    StructureOrder = organization.StructureOrder,
+                    IsActive = organization.IsActive,
+                    OldId = 0,
+                    LastUpdatedBy = "System"
+                };
+                await _uow.OrganizationStructure.Update(org);
+                _uow.Commit();
+                _log.Info("Update Success");
+
+                return Ok(new{
+                    statusResult = "Success",
+                    messageResult = "Update Organization Structure Success",
+                    structureId = org.StructureId
+                });
+            }
+            catch (System.Exception ex)
+            {
+                _uow.Rollback();
+                var err = ex.Message.ToString();
+                _log.Error("Error : ", ex);
+
+                return BadRequest(new{
+                    statusResult = "Failed",
+                    messageResult = err,
+                    structureId = 0
+                });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("list")]
+        public async Task<IActionResult> OrganizationStructureList()
+        {
+            var result = await _uow.OrganizationStructure.GetListOrganizationStructure();
+            return Ok(result);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("list_level")]
+        public async Task<IActionResult> GetListLevel()
+        {
+            var result = await _uow.OrganizationStructure.GetListStructureLevel();
             return Ok(result);
         }
 

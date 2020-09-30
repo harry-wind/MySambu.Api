@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Reflection;
 using System.Data;
 using System.Collections.Generic;
@@ -28,6 +29,13 @@ namespace MySambu.Api.Repositorys.implements.Master
             return result;
         }
 
+        public async Task<OrganizationStructure> GetOrganizationStructureById(int structureId)
+        {
+            var sql = @"Select * From tMst_OrganizationStructure where StructureId=@structureId";
+            var orgs = await Connection.QueryFirstOrDefaultAsync<OrganizationStructure>(sql, new {structureId}, transaction: Transaction);
+            return orgs;
+        }
+
         public async Task<IEnumerable<CompanyDto>> GetListCompany()
         {
             string sql = @"Select * From vwMst_StructureCompany ";
@@ -49,6 +57,17 @@ namespace MySambu.Api.Repositorys.implements.Master
             return result;
         }
 
+        public Task<IEnumerable<OrganizationStructureDto>> GetListOrganizationStructure()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public async Task<IEnumerable<StructureLevelModel>> GetListStructureLevel()
+        {
+            var result = await Connection.GetAllAsync<StructureLevelModel>(transaction: Transaction);
+            return result;
+        }
+
         public async Task<IEnumerable<SubDeptDto>> GetListSubDept(int companyId)
         {
             string sql = @"Select * From vwMst_StructureSubDepartment Where CompanyId=@companyId";
@@ -64,6 +83,11 @@ namespace MySambu.Api.Repositorys.implements.Master
         public async Task Update(OrganizationStructure obj)
         {
             await Connection.UpdateAsync<OrganizationStructure>(obj, transaction: Transaction);
+        }
+
+        public async Task Remove(int structureId)
+        {
+            await Connection.ExecuteAsync(@"Update tMst_OrganizationStructure Set InActive=1 Where StructureId=@structureId", new {ID = structureId}, transaction:Transaction);
         }
     }
 }
