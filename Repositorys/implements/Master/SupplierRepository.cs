@@ -23,10 +23,20 @@ namespace MySambu.Api.Repositorys.implements
             throw new System.NotImplementedException();
         }
 
+        public Task Delete(string id, string by)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public async Task<IEnumerable<Supplier>> GetAll()
         {
             var data = await Connection.GetAllAsync<Supplier>(transaction:Transaction);
             return data;
+        }
+
+        public Task<Supplier> GetByID(string id)
+        {
+            throw new System.NotImplementedException();
         }
 
         public async Task Save(Supplier obj)
