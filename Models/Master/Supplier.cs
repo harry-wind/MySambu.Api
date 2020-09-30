@@ -8,7 +8,7 @@ namespace MySambu.Api.Models.Master
     {
         [ExplicitKey]
         public string SupplierID { get; set; }
-        public bool? NotActive { get; set; }
+        public bool? IsActive { get; set; }
         public string SupplierName { get; set; }
         public string SupplierShortName { get; set; }
         public string AccountNumber { get; set; }
