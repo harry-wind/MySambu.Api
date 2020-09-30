@@ -5,8 +5,20 @@ namespace MySambu.Api.Repositorys.Interfaces
         ILog4NetRepository Log4NetRepository { get; }
         IAuthRepository AuthRepository { get; }
         ISupplierRepository SupplierRepository { get; }
+        ICountryRepository CountryRepository { get; }
+        ICurrencyRepository CurrencyRepository { get; }
+        IRoleRepository RoleRepository { get; }
+        IRolePrevilegeRepository RolePrevilegeRepository {get;}
+        IMenuRepository MenuRepository { get; }
+        IMenuItemRepository MenuItemRepository { get; }
+        IItemRepository ItemRepository { get; }
+        IItemCategoryRepository ItemCategoryRepository { get; }
+        IItemSubCategoryRepository ItemSubCategoryRepository { get; }
+        IItemUOMRepository  ItemUOMRepository { get; }
+        IItemUomConvertionRepository ItemUomConvertionRepository { get; }
         void Commit();
         void Rollback();
+        string GetGUID();
          
     }
 }
