@@ -12,12 +12,22 @@ namespace MySambu.Api.Repositorys.implements
     {
         private IConfiguration _configuration;
         private IDbConnection _connection;
-        // private ILog _log;
         private IDbTransaction _transaction;
         private bool _disposed;
         private IAuthRepository _authRepository;
         private ILog4NetRepository _log4NetRepository;
         private ISupplierRepository _supplierRepository;
+        private ICountryRepository _countryRepository;
+        private ICurrencyRepository _currencyRepository;
+        private IRoleRepository _roleRepository;
+        private IRolePrevilegeRepository _rolePrevilegeRepository;
+        private IItemRepository _itemRepository;
+        private IItemCategoryRepository _itemCategoryRepository;
+        private IItemSubCategoryRepository _itemSubCategoryRepository;
+        private IItemUOMRepository _itemUOMRepository;
+        private IItemUomConvertionRepository _itemUomConvertionRepository;
+        private IMenuRepository _menuRepository;
+        private IMenuItemRepository _menuItemRepository;
 
         public IAuthRepository AuthRepository {
             get { return _authRepository ?? (_authRepository = new AuthRepository(_transaction)); }
@@ -29,6 +39,66 @@ namespace MySambu.Api.Repositorys.implements
 
         public ISupplierRepository SupplierRepository {
             get { return _supplierRepository ?? (_supplierRepository = new SupplierRepository(_transaction)); }
+        }
+
+        public ICountryRepository CountryRepository{
+            get { return _countryRepository ?? (_countryRepository = new CountryRepository(_transaction));}
+        }
+
+        public ICurrencyRepository CurrencyRepository{
+            get { return _currencyRepository ?? (_currencyRepository = new CurrencyRepository(_transaction)); }
+        }
+
+        public IRoleRepository RoleRepository {
+            get { return _roleRepository ?? (_roleRepository = new RoleRepository(_transaction)); }
+        }
+
+        public IRolePrevilegeRepository RolePrevilegeRepository {
+            get { return _rolePrevilegeRepository ?? (_rolePrevilegeRepository = new RolePrevilegeRepository(_transaction)); }
+        }
+
+        public IMenuRepository MenuRepository {
+            get { return _menuRepository ?? (_menuRepository = new MenuRepository(_transaction)); }
+        }
+        public IMenuItemRepository MenuItemRepository {
+            get { return _menuItemRepository ?? (_menuItemRepository = new MenuItemRepository(_transaction));}
+        }
+        public IItemRepository ItemRepository {
+            get { return _itemRepository ?? (_itemRepository = new ItemRepository(_transaction)); }
+        }
+
+        public IItemCategoryRepository ItemCategoryRepository {
+            get { return _itemCategoryRepository ?? (_itemCategoryRepository = new ItemCategoryRepository(_transaction)); }
+        }
+
+        public IItemSubCategoryRepository ItemSubCategoryRepository {
+            get { return _itemSubCategoryRepository ?? (_itemSubCategoryRepository = new ItemSubCategoryRepository(_transaction)); }
+        }
+
+        public IItemUOMRepository ItemUOMRepository {
+            get { return _itemUOMRepository ?? (_itemUOMRepository = new ItemUOMRepository(_transaction)); }
+        }
+
+        public IItemUomConvertionRepository ItemUomConvertionRepository {
+            get { return _itemUomConvertionRepository ?? (_itemUomConvertionRepository = new ItemUomConvertionRepository(_transaction)); }
+        }
+
+
+
+        private void resetRepository()
+        {
+            _authRepository = null;
+            _supplierRepository = null;
+            _countryRepository = null;
+            _currencyRepository = null;
+            _roleRepository = null;
+            _menuRepository = null;
+            _menuItemRepository = null;
+            _rolePrevilegeRepository = null;
+            _itemRepository = null;
+            _itemCategoryRepository = null;
+            _itemSubCategoryRepository = null;
+            _itemUOMRepository = null;
         }
 
         public UnitOfWorks(IConfiguration configuration)
@@ -83,12 +153,6 @@ namespace MySambu.Api.Repositorys.implements
             }
         }
 
-        private void resetRepository()
-        {
-            _authRepository = null;
-            _supplierRepository = null;
-        }
-
         public void Dispose(){
            dispose(true);
            GC.SuppressFinalize(this);
@@ -118,6 +182,11 @@ namespace MySambu.Api.Repositorys.implements
                 _transaction = _connection.BeginTransaction();
                 resetRepository();
             }
+        }
+
+        public string GetGUID()
+        {
+            return Guid.NewGuid().ToString();
         }
 
         ~UnitOfWorks(){
