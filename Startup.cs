@@ -40,7 +40,7 @@ namespace MySambu.Api
             services.AddSingleton<IUnitOfWorks, UnitOfWorks>();
             // services.AddSingleton<ILog4NetRepository, Log4NetRepository>();
             services.AddCors(option => option.AddPolicy("CorsPolicy", builder => {
-                builder.WithOrigins("http://example.com", "http://facebook.com", "http://darimana.com")
+                builder.WithOrigins("http://192.168.12.60:99", "http://facebook.com", "http://darimana.com")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();
