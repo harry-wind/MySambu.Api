@@ -25,7 +25,17 @@ namespace MySambu.Api.Repositorys.implements
             throw new System.NotImplementedException();
         }
 
+        public Task Delete(string id, string by)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public Task<IEnumerable<Log>> GetAll()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<Log> GetByID(string id)
         {
             throw new System.NotImplementedException();
         }

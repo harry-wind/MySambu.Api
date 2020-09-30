@@ -8,6 +8,8 @@ namespace MySambu.Api.Repositorys.Interfaces
         Task Save(T obj);
         Task Update(T obj);
         Task Delete(T obj);
+        Task Delete(string id, string by);
         Task<IEnumerable<T>> GetAll();
+        Task<T> GetByID(string id);
     }
 }

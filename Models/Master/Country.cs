@@ -7,7 +7,7 @@ namespace MySambu.Api.Models.Master
     public class Country
     {
         [Key]
-        public string CountryID { get; set; }
+        public string CountryId { get; set; }
         public string CountryName { get; set; }
         public string CountryIdd { get; set; }
         public string CreatedBy { get; set; }

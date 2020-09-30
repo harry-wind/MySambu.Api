@@ -8,8 +8,20 @@ namespace MySambu.Api.Repositorys.Interfaces
         IAuthRepository AuthRepository { get; }
         ISupplierRepository SupplierRepository { get; }
         IOrganizationStructureRepository OrganizationStructure { get; }
+        ICountryRepository CountryRepository { get; }
+        ICurrencyRepository CurrencyRepository { get; }
+        IRoleRepository RoleRepository { get; }
+        IRolePrevilegeRepository RolePrevilegeRepository {get;}
+        IMenuRepository MenuRepository { get; }
+        IMenuItemRepository MenuItemRepository { get; }
+        IItemRepository ItemRepository { get; }
+        IItemCategoryRepository ItemCategoryRepository { get; }
+        IItemSubCategoryRepository ItemSubCategoryRepository { get; }
+        IItemUOMRepository  ItemUOMRepository { get; }
+        IItemUomConvertionRepository ItemUomConvertionRepository { get; }
         void Commit();
         void Rollback();
+        string GetGUID();
          
     }
 }
