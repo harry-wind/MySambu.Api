@@ -20,7 +20,7 @@ namespace MySambu.Api.Controllers.Master
         private readonly IConfiguration _config;
         // private readonly ILog _log;
         private IHttpContextAccessor _httpContext;
-        Status st1 = new Status();
+        // Status st1 = new Status();
         public SupplierController(IUnitOfWorks uow, IConfiguration config)
         {
             _uow = uow;
@@ -50,7 +50,7 @@ namespace MySambu.Api.Controllers.Master
 
                 log4net.LogicalThreadContext.Properties["User"] = sup.CreatedBy;
                 _log.Error("Error : ", e);
-                return Ok(new{Status = st1});
+                return Ok(new{Status = st});
             }
         }
 
@@ -65,17 +65,15 @@ namespace MySambu.Api.Controllers.Master
                
                var st = StTrans.SetSt(200, 0, "Succes");
                 _log.Info("Get Data Supplier");
-                return Ok(new{Status = st1, Result = dt});
+                return Ok(new{Status = st, Result = dt});
             }
             catch (System.Exception e)
             {
-                st1.Code = 400;   
-                st1.PasgesCount = 0;
-                st1.Description = e.Message;
+                var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
                 // log4net.LogicalThreadContext.Properties["User"] = sup.CreatedBy;
                 _log.Error("Error : ", e);
-                return Ok(new{Status = st1});
+                return Ok(new{Status = st});
             }
 
         }
