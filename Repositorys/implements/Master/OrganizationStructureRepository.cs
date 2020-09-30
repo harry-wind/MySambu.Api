@@ -19,10 +19,20 @@ namespace MySambu.Api.Repositorys.implements.Master
             throw new System.NotImplementedException();
         }
 
+        public Task Delete(string id, string by)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public async Task<IEnumerable<OrganizationStructure>> GetAll()
         {
             var result = await Connection.GetAllAsync<OrganizationStructure>(transaction: Transaction);
             return result;
+        }
+
+        public Task<OrganizationStructure> GetByID(string id)
+        {
+            throw new System.NotImplementedException();
         }
 
         public async Task Save(OrganizationStructure obj)
