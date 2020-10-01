@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MySambu.Api.Models.Master;
@@ -16,10 +17,12 @@ namespace MySambu.Api.Controllers.Master
         private static readonly ILog _log = LogManager.GetLogger(typeof(OrganizationStructure));
         private readonly IUnitOfWorks _uow; 
         private readonly IConfiguration _config;
+        private IHttpContextAccessor _httpContext;
         public OrganizationStructureController(IUnitOfWorks uow, IConfiguration config)
         {
             _uow = uow;
             _config = config;
+            _httpContext = (IHttpContextAccessor)new HttpContextAccessor();
         }
 
         [AllowAnonymous]
@@ -36,18 +39,7 @@ namespace MySambu.Api.Controllers.Master
         {
             try
             {
-                var org = new OrganizationStructure {
-                    StructureName = organization.StructureName.ToString(),
-                    StructureAbbr = organization.StructureAbbr.ToString(),
-                    StructureParentId = organization.StructureParentId,
-                    StructureLevel = organization.StructureLevel,
-                    StructureOrder = organization.StructureOrder,
-                    IsActive = organization.IsActive,
-                    OldId = 0,
-                    CreatedBy = "System"
-                };
-
-                await _uow.OrganizationStructure.Save(org);
+                await _uow.OrganizationStructure.Save(organization);
                 _uow.Commit();
                 _log.Info("Save Success");
 
@@ -55,7 +47,7 @@ namespace MySambu.Api.Controllers.Master
                     new {
                         statusResult = "Success",
                         messageResult = "Saving Organization Structure Success",
-                        structureId = org.StructureId
+                        structureId = organization.StructureId
                     }
                 );
             }
