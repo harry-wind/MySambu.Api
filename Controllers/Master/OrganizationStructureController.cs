@@ -34,7 +34,7 @@ namespace MySambu.Api.Controllers.Master
         }
 
         [AllowAnonymous]
-        [HttpPost("save")]
+        [HttpPost("Save")]
         public async Task<IActionResult> SaveOrganizationStructure(OrganizationStructure organization)
         {
             try
@@ -66,7 +66,7 @@ namespace MySambu.Api.Controllers.Master
         }
 
         [AllowAnonymous]
-        [HttpPut("update/{structureId}")]
+        [HttpPut("Update/{structureId}")]
         public async Task<IActionResult> UpdateOrganizationStructure(OrganizationStructure organization, int structureId)
         {
             try
@@ -108,15 +108,15 @@ namespace MySambu.Api.Controllers.Master
         }
 
         [AllowAnonymous]
-        [HttpGet("list")]
+        [HttpGet("List")]
         public async Task<IActionResult> OrganizationStructureList()
         {
-            var result = await _uow.OrganizationStructure.GetListOrganizationStructure();
+            var result = await _uow.OrganizationStructure.GetAll();
             return Ok(result);
         }
 
         [AllowAnonymous]
-        [HttpGet("list_level")]
+        [HttpGet("ListLevel")]
         public async Task<IActionResult> GetListLevel()
         {
             var result = await _uow.OrganizationStructure.GetListStructureLevel();
@@ -124,7 +124,7 @@ namespace MySambu.Api.Controllers.Master
         }
 
         [AllowAnonymous]
-        [HttpGet("list_company")]
+        [HttpGet("ListCompany")]
         public async Task<IActionResult> GetListCompany()
         {
             var result = await _uow.OrganizationStructure.GetListCompany();
@@ -132,7 +132,7 @@ namespace MySambu.Api.Controllers.Master
         }
 
         [AllowAnonymous]
-        [HttpGet("list_div/{companyid}")]
+        [HttpGet("ListDivision/{companyid}")]
         public async Task<IActionResult> GetListDivision(int companyid)
         {
             var result = await _uow.OrganizationStructure.GetListDivision(companyid);
@@ -140,7 +140,7 @@ namespace MySambu.Api.Controllers.Master
         }
 
         [AllowAnonymous]
-        [HttpGet("list_dept/{companyid}")]
+        [HttpGet("ListDepartment/{companyid}")]
         public async Task<IActionResult> GetListDepartment(int companyid)
         {
             var result = await _uow.OrganizationStructure.GetListDept(companyid);
@@ -148,7 +148,7 @@ namespace MySambu.Api.Controllers.Master
         }
 
         [AllowAnonymous]
-        [HttpGet("list_subdept/{companyid}")]
+        [HttpGet("ListSubDepartment/{companyid}")]
         public async Task<IActionResult> GetListSubDepartment(int companyid)
         {
             var result = await _uow.OrganizationStructure.GetListSubDept(companyid);
