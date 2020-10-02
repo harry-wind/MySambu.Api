@@ -12,6 +12,8 @@ using MySambu.Api.Repositorys.Interfaces;
 
 namespace MySambu.Api.Controllers.Master
 {
+    [Route("apimysambu/[controller]")]
+    [ApiController]
     public class CurrencyController : ControllerBase
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(CurrencyController));
@@ -27,8 +29,8 @@ namespace MySambu.Api.Controllers.Master
         
         // [Authorize(Policy="RequireAdminRole")]
         [AllowAnonymous]
-        [HttpPost("SaveCurrency")]
-        public async Task<IActionResult> SaveCurrency(Currency cur){
+        [HttpPost("Save")]
+        public async Task<IActionResult> Save(Currency cur){
             try
             {
                await _uow.CurrencyRepository.Save(cur);
@@ -52,8 +54,8 @@ namespace MySambu.Api.Controllers.Master
 
         // [Authorize(Policy="RequireAdminRole")]
         [AllowAnonymous]
-        [HttpGet("GetListCurrency")]
-        public async Task<IActionResult> GetListCurrency(){
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll(){
             try
             {
                 var dt = await _uow.CurrencyRepository.GetAll();
@@ -112,7 +114,7 @@ namespace MySambu.Api.Controllers.Master
                _log.Info("Succes Update");
                
                var st = StTrans.SetSt(200, 0, "Succes");
-               return Ok(new{Status = st, Result = cur});
+               return Ok(new{Status = st, Results = cur});
             }
             catch (System.Exception e)
             {
@@ -134,7 +136,7 @@ namespace MySambu.Api.Controllers.Master
                _uow.Commit();
             //    _log.Info("Succes Update");
                var st = StTrans.SetSt(200, 0, "Succes");
-               return Ok(new{Status = st, Result = data});
+               return Ok(new{Status = st, Results = data});
             }
             catch (System.Exception e)
             {
