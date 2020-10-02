@@ -1,6 +1,8 @@
+using MySambu.Api.Models.Master;
+
 namespace MySambu.Api.Repositorys.Interfaces
 {
-    public interface IItemSubCategoryRepository
+    public interface IItemSubCategoryRepository : IBaseRepository<ItemSubCategory>
     {
     }
 }
