@@ -60,7 +60,7 @@ namespace MySambu.Api.Repositorys.implements
         {
             foreach (var data in dt)
             {
-                await Connection.QueryAsync("UPDATE tMst_CurrencyRate SET CurrencyRate = @l1, LastUpdatedBy = @l2, LastUpdatedDate = @l3@ WHERE CurrencyDate = @l4",
+                await Connection.QueryAsync("UPDATE tMst_CurrencyRate SET CurrencyRate = @l1, LastUpdatedBy = @l2, LastUpdatedDate = @l3 WHERE CurrencyDate = @l4",
                         new { l1 = data.CurrencyRate, l2 = data.LastUpdatedBy, l3 = data.LastUpdatedDate, l4 = data.CurrencyDate }, transaction: Transaction);
             }
         }
