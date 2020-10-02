@@ -1,9 +1,12 @@
 using System;
+using Dapper.Contrib.Extensions;
 
 namespace MySambu.Api.Models.Master
 {
+    [Table("tMst_item")]
     public class Item
     {
+        [ExplicitKey]
         public string ItemID { get; set; }
         public string ItemIDSambu { get; set; }
         public string ItemIDSambu_Bak { get; set; }
