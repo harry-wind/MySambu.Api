@@ -28,7 +28,7 @@ namespace MySambu.Api.Models.Utility
         [Write(false)]
         public string Token { get; set; }
         [Write(false)]
-        public IEnumerable<RolePrevilege> RolePrevilege { get; set; }
+        public IEnumerable<RolePrevilege> RolePrivileges { get; set; }
     }
 
     public static class UserFn{
