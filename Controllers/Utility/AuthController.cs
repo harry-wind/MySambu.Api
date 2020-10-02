@@ -67,7 +67,7 @@ namespace MySambu.Api.Controllers.Utility
                 _uow.Commit();
                 // log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Info("Succes Save");
-                return Ok(new{Status = st2, Result = usercreate});
+                return Ok(new{Status = st2, Results = usercreate});
 
             }
             catch (System.Exception e)
@@ -94,13 +94,13 @@ namespace MySambu.Api.Controllers.Utility
 
                 dt.Role = await _uow.RoleRepository.GetByID(dt.RoleId);
                 dt.Token = GenerateJwtToken(dt);
-                dt.RolePrevilege = await _uow.RolePrevilegeRepository.GetByID2(dt.RoleId);
+                dt.RolePrivileges = await _uow.RolePrevilegeRepository.GetByID2(dt.RoleId);
                 _uow.Commit();
 
                 var st = StTrans.SetSt(200, 0, "User Berhasil Login");
                 log4net.LogicalThreadContext.Properties["User"] = userDto.UserId;
                 _log.Info("Telah Login");
-                return Ok(new{Status = st, Result = dt});
+                return Ok(new{Status = st, Results = dt});
             }
             catch (System.Exception e)
             {
@@ -108,6 +108,28 @@ namespace MySambu.Api.Controllers.Utility
                 _uow.Rollback();
 
                 log4net.LogicalThreadContext.Properties["User"] = userDto.UserId;
+                _log.Error("Error", e);
+                return Ok(new{Status = st});
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetUserByID")]
+        public async Task<IActionResult> GetByID(string id){
+            try
+            {
+                var dt = await _uow.AuthRepository.GetByID(id);
+                var st = StTrans.SetSt(200, 0, "User Berhasil Login");
+                // log4net.LogicalThreadContext.Properties["User"] = userDto.UserId;
+                // _log.Info("Telah Login");
+                return Ok(new{Status = st, Results = dt});
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+
+                // log4net.LogicalThreadContext.Properties["User"] = userDto.UserId;
                 _log.Error("Error", e);
                 return Ok(new{Status = st});
             }
