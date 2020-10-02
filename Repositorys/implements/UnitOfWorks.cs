@@ -28,6 +28,7 @@ namespace MySambu.Api.Repositorys.implements
         private IItemUomConvertionRepository _itemUomConvertionRepository;
         private IMenuRepository _menuRepository;
         private IMenuItemRepository _menuItemRepository;
+        private IItemSpecRepository _itemSpecRepository;
 
         public IAuthRepository AuthRepository {
             get { return _authRepository ?? (_authRepository = new AuthRepository(_transaction)); }
@@ -83,7 +84,9 @@ namespace MySambu.Api.Repositorys.implements
             get { return _itemUomConvertionRepository ?? (_itemUomConvertionRepository = new ItemUomConvertionRepository(_transaction)); }
         }
 
-
+        public IItemSpecRepository ItemSpecRepository {
+            get { return _itemSpecRepository ?? (_itemSpecRepository = new ItemSpecRepository(_transaction)); }
+        }
 
         private void resetRepository()
         {
@@ -99,6 +102,7 @@ namespace MySambu.Api.Repositorys.implements
             _itemCategoryRepository = null;
             _itemSubCategoryRepository = null;
             _itemUOMRepository = null;
+            _itemSpecRepository = null;
         }
 
         public UnitOfWorks(IConfiguration configuration)
