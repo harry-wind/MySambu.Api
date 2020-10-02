@@ -62,11 +62,6 @@ namespace MySambu.Api.Repositorys.implements.Master
             return result;
         }
 
-        public Task<IEnumerable<OrganizationStructureDto>> GetListOrganizationStructure()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public async Task<IEnumerable<StructureLevelModel>> GetListStructureLevel()
         {
             var result = await Connection.GetAllAsync<StructureLevelModel>(transaction: Transaction);

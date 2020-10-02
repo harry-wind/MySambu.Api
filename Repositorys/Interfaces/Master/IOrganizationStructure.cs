@@ -14,7 +14,5 @@ namespace MySambu.Api.Repositorys.Interfaces.Master
         Task<IEnumerable<DivisionDto>> GetListDivision(int companyId);
         Task<IEnumerable<DepartmentDto>> GetListDept(int companyId);
         Task<IEnumerable<SubDeptDto>> GetListSubDept(int companyId);
-        Task<IEnumerable<OrganizationStructureDto>> GetListOrganizationStructure();
-
     }
 }

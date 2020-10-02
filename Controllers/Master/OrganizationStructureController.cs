@@ -111,7 +111,7 @@ namespace MySambu.Api.Controllers.Master
         [HttpGet("list")]
         public async Task<IActionResult> OrganizationStructureList()
         {
-            var result = await _uow.OrganizationStructure.GetListOrganizationStructure();
+            var result = await _uow.OrganizationStructure.GetAll();
             return Ok(result);
         }
 
