@@ -41,7 +41,7 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task Save(Supplier obj)
         {
-            await Connection.QueryAsync("spSupplierSave", new
+            await Connection.QueryAsync("pMst_SupplierSave", new
             {
                 SupplierID = obj.SupplierID,
                 CSTSupplierID = obj.SupplierIDOld,
