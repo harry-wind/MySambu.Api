@@ -66,8 +66,8 @@ namespace MySambu.Api
                 {
                     policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
                     policy.RequireAuthenticatedUser();
-                    string[] dt = {"Admin", "admin"};
-                    policy.RequireClaim(ClaimTypes.Role, dt);
+                    // string[] dt = {"Admin", "admin"};
+                    // policy.RequireClaim(ClaimTypes.Role, dt);
                 });
             });
 
