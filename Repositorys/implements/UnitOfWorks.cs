@@ -106,6 +106,7 @@ namespace MySambu.Api.Repositorys.implements
             _itemCategoryRepository = null;
             _itemSubCategoryRepository = null;
             _itemUOMRepository = null;
+            _organizationRepository = null;
         }
 
         public UnitOfWorks(IConfiguration configuration)
@@ -129,7 +130,8 @@ namespace MySambu.Api.Repositorys.implements
                 // cari di nuget
                 SqlClientFactory provider = SqlClientFactory.Instance; 
                 conn = provider.CreateConnection();
-                string _constring = "Data Source=192.168.12.5; Initial Catalog=SambuERP; User ID=uKoneksi; Password=sm@rt2018; MultipleActiveResultSets=True;";
+                // string _constring = "Data Source=192.168.12.5; Initial Catalog=SambuERP; User ID=uKoneksi; Password=sm@rt2018; MultipleActiveResultSets=True;";
+                string _constring = "Data Source=192.168.12.55\\LOCAL12; Initial Catalog=SambuERP; User ID=sa; Password=p@ssw0rd; MultipleActiveResultSets=True;";
                 // string _constring = "Data Source=(local); Initial Catalog=DocumentDB; User ID=sa; Password=123; MultipleActiveResultSets=True;";
                 conn.ConnectionString = _constring;
             }
