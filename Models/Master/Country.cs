@@ -11,7 +11,7 @@ namespace MySambu.Api.Models.Master
         public string CountryName { get; set; }
         public string CountryIdd { get; set; }
         public string CreatedBy { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
         public string LastUpdatedBy { get; set; }
         public Nullable<DateTime> LastUpdatedDate { get; set; }
         public string Computer { get; set; }
