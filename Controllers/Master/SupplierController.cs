@@ -29,9 +29,9 @@ namespace MySambu.Api.Controllers.Master
             _httpContext = (IHttpContextAccessor)new HttpContextAccessor();
         }
 
-        // [Authorize(Policy="RequireAdminRole")]
-        [AllowAnonymous]
-        [HttpPost("SaveSupplier")]
+        [Authorize(Policy="RequireAdmin")]
+        // [AllowAnonymous]
+        [HttpPost("Save")]
         public async Task<IActionResult> SaveSupplier(Supplier sup){
             try
             {
@@ -40,7 +40,7 @@ namespace MySambu.Api.Controllers.Master
                _log.Info("Succes Save");
                
                var st = StTrans.SetSt(200, 0, "Succes");
-               return Ok(new{Status = st, Result = sup});
+               return Ok(new{Status = st, Results = sup});
         
             }
             catch (System.Exception e)
@@ -54,10 +54,10 @@ namespace MySambu.Api.Controllers.Master
             }
         }
 
-          // [Authorize(Policy="RequireAdminRole")]
-        [AllowAnonymous]
-        [HttpGet("GetListSupplier")]
-        public async Task<IActionResult> GetListSupplier(){
+        [Authorize(Policy="RequireAdmin")]
+        // [AllowAnonymous]
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll(){
             try
             {
                 var dt = await _uow.SupplierRepository.GetAll();
@@ -65,7 +65,7 @@ namespace MySambu.Api.Controllers.Master
                
                var st = StTrans.SetSt(200, 0, "Succes");
                 _log.Info("Get Data Supplier");
-                return Ok(new{Status = st, Result = dt});
+                return Ok(new{Status = st, Results = dt});
             }
             catch (System.Exception e)
             {

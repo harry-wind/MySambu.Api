@@ -1,3 +1,5 @@
+using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
@@ -25,18 +27,51 @@ namespace MySambu.Api.Controllers.Master
             _httpContext = (IHttpContextAccessor)new HttpContextAccessor();
         }
         
-        // [Authorize(Policy="RequireAdminRole")]
-        [AllowAnonymous]
-        [HttpPost("SaveCountry")]
-        public async Task<IActionResult> SaveCountry(Country count){
+        [Authorize(Policy="RequireAdmin")]        
+        [HttpPost("Save")]
+        public async Task<IActionResult> Save(Country count){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-               await _uow.CountryRepository.Save(count);
-               _uow.Commit();
-               _log.Info("Succes Save");
+                count.CountryId = _uow.GetGUID();
+                count.CreatedDate = DateTime.Now;
+                await _uow.CountryRepository.Save(count);
                
-               var st = StTrans.SetSt(200, 0, "Succes");
-               return Ok(new{Status = st, Result = count});
+                _uow.Commit();
+
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Info("Succes Save");
+                
+                var st = StTrans.SetSt(200, 0, "Succes");
+                return Ok(new{Status = st, Results = count});
+        
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Error("Error : ", e);
+                return Ok(new{Status = st});
+            }
+        }
+
+
+        [Authorize(Policy="RequireAdmin")]
+        [HttpPost("Update")]
+        public async Task<IActionResult> UpdatedCountry(Country count){
+            try
+            {
+                // count.CountryId = _uow.GetGUID();
+                count.CreatedDate = DateTime.Now;
+                await _uow.CountryRepository.Save(count);
+               
+                _uow.Commit();
+                _log.Info("Succes Updated");
+                
+                var st = StTrans.SetSt(200, 0, "Succes");
+                return Ok(new{Status = st, Results = count});
         
             }
             catch (System.Exception e)
@@ -50,10 +85,9 @@ namespace MySambu.Api.Controllers.Master
             }
         }
 
-        // [Authorize(Policy="RequireAdminRole")]
-        [AllowAnonymous]
-        [HttpGet("GetListCountry")]
-        public async Task<IActionResult> GetListCountry(){
+        [Authorize(Policy="RequireAdmin")]
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll(){
             try
             {
                 var dt = await _uow.CountryRepository.GetAll();
@@ -61,7 +95,7 @@ namespace MySambu.Api.Controllers.Master
                
                 var st = StTrans.SetSt(200, 0, "Succes");
                 _log.Info("Get Data Country");
-                return Ok(new{Status = st, Result = dt});
+                return Ok(new{Status = st, Results = dt});
             }
             catch (System.Exception e)
             {

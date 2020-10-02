@@ -119,9 +119,9 @@ namespace MySambu.Api.Repositorys.implements
             return password;
         }
 
-        public Task<User> GetByID(string id)
+        public async Task<User> GetByID(string id)
         {
-            throw new NotImplementedException();
+            return await Connection.QueryFirstOrDefaultAsync<User>("Select * FROM tUtl_User WHERE UserId = @userid", new { userid = id }, transaction: Transaction);
         }
 
         public Task Delete(string id, string by)
