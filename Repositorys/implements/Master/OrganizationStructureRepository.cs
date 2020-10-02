@@ -87,7 +87,18 @@ namespace MySambu.Api.Repositorys.implements.Master
 
         public async Task Update(OrganizationStructure obj)
         {
-            await Connection.UpdateAsync<OrganizationStructure>(obj, transaction: Transaction);
+            var sql = @"Update tMst_OrganizationStructure Set
+                    StructureName = @StructureName,
+                    StructureAbbr = @StructureAbbr,
+                    StructureParentId = @StructureParentId,
+                    StructureLevel = @StructureLevel,
+                    StructureOrder = @StructureOrder,
+                    IsActive = @IsActive,
+                    LastUpdatedBy = @LastUpdatedBy,
+                    LastUpdatedDate = @LastUpdatedDate
+                    WHERE StructureId = @StructureId";
+
+                await Connection.ExecuteAsync(sql, obj, transaction:Transaction);
         }
 
         public async Task Remove(int structureId)

@@ -79,8 +79,9 @@ namespace MySambu.Api.Controllers.Master
                     StructureLevel = organization.StructureLevel,
                     StructureOrder = organization.StructureOrder,
                     IsActive = organization.IsActive,
-                    OldId = 0,
-                    LastUpdatedBy = "System"
+                    OldId = organization.OldId,
+                    LastUpdatedBy = organization.LastUpdatedBy,
+                    LastUpdatedDate = DateTime.Now
                 };
                 await _uow.OrganizationStructure.Update(org);
                 _uow.Commit();
