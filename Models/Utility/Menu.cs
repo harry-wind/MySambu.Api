@@ -1,9 +1,12 @@
 using System;
+using Dapper.Contrib.Extensions;
 
 namespace MySambu.Api.Models.Utility
 {
+    [Table("tUtl_AppMenu")]
     public class Menu
     {
+        [ExplicitKey]
         public string MenuId { get; set; }
         public string MenuName { get; set; }
         public string MenuTitle { get; set; }
