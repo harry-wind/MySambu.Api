@@ -1,13 +1,16 @@
 using System;
+using Dapper.Contrib.Extensions;
 
 namespace MySambu.Api.Models.Master
 {
-    public class ItemUomConvertion
+    [Table("tMst_ItemUOMConvertion")]
+    public class ItemUOMConvertion
     {
         public string ID { get; set; }
         public long? UomUsage { get; set; }
         public long? UomPurchase { get; set; }
         public decimal? QntyConvertion { get; set; }
+        public bool IsActive { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
         public string LastUpdatedBy { get; set; }
