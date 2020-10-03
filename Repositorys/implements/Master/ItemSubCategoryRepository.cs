@@ -24,7 +24,7 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task Delete(string id, string by)
         {
-            await Connection.QueryAsync("UPDATE tMst_ItemCategory SET IsActive = false , UpdatedBy = @UpdatedBy, UpdatedDate = @UpdatedDate WHERE SubCategoryGUID = @CategoryGUID", 
+            await Connection.QueryAsync("UPDATE tMst_ItemCategory SET IsActive = false , UpdatedBy = @UpdatedBy, UpdatedDate = @UpdatedDate WHERE SubCategoryID = @CategoryGUID", 
                 new {UpdatedBy = by, UpdatedDate = DateTime.Now, SubCategoryGUID = id}, transaction:Transaction);
         }
 
@@ -45,8 +45,8 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task Update(ItemSubCategory obj)
         {
-            await Connection.QueryAsync("UPDATE tMst_ItemSubCategory SET RevisionNo = RevisionNo + 1, SubCategoryName = @CategoryName, CategoryGUID = @CategoryGUID, CategoryID = @CategoryID, ACCID = @ACCID, UpdatedBy = @UpdatedBy, UpdatedDate = @UpdatedDate WHERE SubCategoryGUID = @SubCategoryGUID",
-                    new { CategoryName = obj.SubCategoryName, ACCID = obj.ACCID, CategoryGUID = obj.CategoryGUID, CategoryID = obj.CategoryID , UpdatedBy = obj.CreatedBy, UpdatedDate = DateTime.Now, SubCategoryGUID = obj.SubCategoryGUID }, transaction: Transaction);
+            await Connection.QueryAsync("UPDATE tMst_ItemSubCategory SET RevisionNo = RevisionNo + 1, SubCategoryName = @CategoryName, CategoryGUID = @CategoryGUID, CategoryID = @CategoryID, ACCID = @ACCID, UpdatedBy = @UpdatedBy, UpdatedDate = @UpdatedDate WHERE SubCategoryGUID = @SubCategoryID",
+                    new { CategoryName = obj.SubCategoryName, ACCID = obj.ACCID, CategoryGUID = obj.CategoryGUID, CategoryID = obj.CategoryID , UpdatedBy = obj.CreatedBy, UpdatedDate = DateTime.Now, SubCategoryGUID = obj.SubCategoryID }, transaction: Transaction);
         }
     }
 }
