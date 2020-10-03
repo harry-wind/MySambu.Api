@@ -6,7 +6,7 @@ namespace MySambu.Api.Models.Master
     [Table("tMst_ItemUOM")]
     public class ItemUOM
     {
-        public string UOMGUID { get; set; }
+        [ExplicitKey]
         public short UOMID { get; set; }
         public short RevisionNo { get; set; }
         public string UOMName { get; set; }
