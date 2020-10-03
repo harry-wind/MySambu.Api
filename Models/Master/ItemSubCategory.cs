@@ -6,7 +6,7 @@ namespace MySambu.Api.Models.Master
     [Table("tMst_ItemSubCategory")]
     public class ItemSubCategory
     {
-        public string SubCategoryGUID { get; set; }
+        [ExplicitKey]
         public short SubCategoryID { get; set; }
         public short RevisionNo { get; set; }
         public string SubCategoryName { get; set; }
