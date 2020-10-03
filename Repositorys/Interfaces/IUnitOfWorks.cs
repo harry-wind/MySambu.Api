@@ -17,6 +17,9 @@ namespace MySambu.Api.Repositorys.Interfaces
         IItemUOMRepository  ItemUOMRepository { get; }
         IItemUomConvertionRepository ItemUomConvertionRepository { get; }
         IItemSpecRepository ItemSpecRepository { get; }
+        ITransTypeRepository TransTypeRepository { get; }
+        IBudgetCategoryRepository BudgetCategoryRepository { get; }
+        IWarehouseRepository WarehouseRepository { get; }
         void Commit();
         void Rollback();
         string GetGUID();

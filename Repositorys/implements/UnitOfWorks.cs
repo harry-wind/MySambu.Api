@@ -29,6 +29,9 @@ namespace MySambu.Api.Repositorys.implements
         private IMenuRepository _menuRepository;
         private IMenuItemRepository _menuItemRepository;
         private IItemSpecRepository _itemSpecRepository;
+        private ITransTypeRepository _transTypeRepository;
+        private IBudgetCategoryRepository _budgetCategoryRepository;
+        private IWarehouseRepository _warehouseRepository;
 
         public IAuthRepository AuthRepository {
             get { return _authRepository ?? (_authRepository = new AuthRepository(_transaction)); }
@@ -88,6 +91,18 @@ namespace MySambu.Api.Repositorys.implements
             get { return _itemSpecRepository ?? (_itemSpecRepository = new ItemSpecRepository(_transaction)); }
         }
 
+        public ITransTypeRepository TransTypeRepository {
+            get { return _transTypeRepository ?? (_transTypeRepository = new TransTypeRepository(_transaction)); }
+        }
+
+        public IBudgetCategoryRepository BudgetCategoryRepository{
+            get { return _budgetCategoryRepository ?? (_budgetCategoryRepository = new BudgetCategoryRepository(_transaction)); }
+        }
+
+        public IWarehouseRepository WarehouseRepository {
+            get { return _warehouseRepository ?? (_warehouseRepository = new WarehouseRepository(_transaction)); }
+        }
+
         private void resetRepository()
         {
             _authRepository = null;
@@ -102,7 +117,11 @@ namespace MySambu.Api.Repositorys.implements
             _itemCategoryRepository = null;
             _itemSubCategoryRepository = null;
             _itemUOMRepository = null;
+            _itemUomConvertionRepository = null;
             _itemSpecRepository = null;
+            _transTypeRepository = null;
+            _budgetCategoryRepository = null;
+            _warehouseRepository = null;
         }
 
         public UnitOfWorks(IConfiguration configuration)
