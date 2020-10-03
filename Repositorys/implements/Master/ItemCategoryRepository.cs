@@ -40,7 +40,20 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task Save(ItemCategory obj)
         {
-            await Connection.InsertAsync<ItemCategory>(obj, transaction: Transaction);
+            // await Connection.InsertAsync<ItemCategory>(obj, transaction: Transaction);
+            await Connection.QueryAsync("pMst_ItemCategorySave", new
+            {
+                CategoryID = obj.CategoryID,
+                CategoryName = obj.CategoryName,
+                ACCID = obj.ACCID,
+                NotJurnalIND = obj.NotJurnalIND,
+                RekeningJurnal = obj.RekeningJurnal,
+                IsActive = obj.IsActive,
+                CompanyID = obj.CompanyID,
+                ComputerName = obj.CategoryName,
+                UserID = obj.CreatedBy,
+                Flag = 0 
+            }, commandType: CommandType.StoredProcedure, transaction: Transaction);
         }
 
         public async Task Update(ItemCategory obj)
@@ -50,6 +63,7 @@ namespace MySambu.Api.Repositorys.implements
         }
     }
 }
+
 
 
 

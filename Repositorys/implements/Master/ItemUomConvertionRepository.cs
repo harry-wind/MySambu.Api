@@ -23,7 +23,7 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task Delete(string id, string by)
         {
-           await Connection.QueryAsync("UPDATE tMst_ItemUOMConvertion SET IsActive = false, UpdatedBy = @by, UpdatedDate = @tgl WHERE ID = @id",
+           await Connection.QueryAsync("UPDATE tMst_ItemUOMConvertion SET IsActive = false, UpdatedBy = @by, UpdatedDate = @tgl WHERE UOMConvertionID = @id",
                 new{ UpdatedBy = by, UpdatedDate = DateTime.Now, id = id}, transaction:Transaction);
         }
 
@@ -34,7 +34,7 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task<ItemUOMConvertion> GetByID(string id)
         {
-            return await Connection.QueryFirstOrDefaultAsync<ItemUOMConvertion>("SELECT * FROM tMst_ItemUOMConvertion WHERE ID = @id", new { id = id}, transaction:Transaction);
+            return await Connection.QueryFirstOrDefaultAsync<ItemUOMConvertion>("SELECT * FROM tMst_ItemUOMConvertion WHERE UOMConvertionID = @id", new { id = id}, transaction:Transaction);
         }
 
         public async Task Save(ItemUOMConvertion obj)
@@ -44,8 +44,8 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task Update(ItemUOMConvertion obj)
         {
-            await Connection.QueryAsync("UPDATE tMst_ItemUOMConvertion SET UomUsage = @usage, UomPurchase = @purchase, UpdatedBy = @by, UpdatedDate = @tgl WHERE ID = @id",
-                new{usage = obj.UomUsage, purchase = obj.UomPurchase, UpdatedBy = obj.CreatedBy, UpdatedDate = DateTime.Now, id = obj.ID}, transaction:Transaction);
+            await Connection.QueryAsync("UPDATE tMst_ItemUOMConvertion SET UomUsage = @usage, UomPurchase = @purchase, UpdatedBy = @by, UpdatedDate = @tgl WHERE UOMConvertionID = @id",
+                new{usage = obj.UOMUsage, purchase = obj.UOMPurchase, UpdatedBy = obj.CreatedBy, UpdatedDate = DateTime.Now, id = obj.UOMConvertionID}, transaction:Transaction);
         }
     }
 }

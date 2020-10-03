@@ -43,13 +43,13 @@ namespace MySambu.Api.Repositorys.implements
         {
             await Connection.QueryAsync("pMst_SupplierSave", new
             {
-                SupplierID = obj.SupplierID,
-                CSTSupplierID = obj.SupplierIDOld,
+                SupplierID = obj.SupplierId,
+                CSTSupplierID = obj.SupplierIdOld,
                 SupplierName = obj.SupplierName,
                 SupplierShortName = obj.SupplierShortName,
                 AccountNumber = obj.AccountNumber,
                 AccountName = obj.AccountName,
-                CountryID = obj.CountryID,
+                CountryID = obj.CountryId,
                 Address1 = obj.Address1,
                 Address2 = obj.Address2,
                 Address3 = obj.Address3,

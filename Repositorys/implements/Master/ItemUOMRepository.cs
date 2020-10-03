@@ -23,7 +23,7 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task Delete(string id, string by)
         {
-            await Connection.QueryAsync("UPDATE tMst_ItemUOM SET IsActive = FALSE, UpdatedBy = @by, UpdatedDate = @tgl WHERE UOMGUID = @id",
+            await Connection.QueryAsync("UPDATE tMst_ItemUOM SET IsActive = FALSE, UpdatedBy = @by, UpdatedDate = @tgl WHERE UOMID = @id",
                 new { by = by, tgl = DateTime.Now, id = id}, transaction:Transaction);
         }
 
@@ -34,7 +34,7 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task<ItemUOM> GetByID(string id)
         {
-            return await Connection.QueryFirstOrDefaultAsync<ItemUOM>("Select * FROM tMst_ItemUOM where UOMGUID = @id", new { id = id}, transaction:Transaction);
+            return await Connection.QueryFirstOrDefaultAsync<ItemUOM>("Select * FROM tMst_ItemUOM where UOMID = @id", new { id = id}, transaction:Transaction);
         }
 
         public async Task Save(ItemUOM obj)
