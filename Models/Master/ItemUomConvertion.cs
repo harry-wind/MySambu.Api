@@ -6,9 +6,10 @@ namespace MySambu.Api.Models.Master
     [Table("tMst_ItemUOMConvertion")]
     public class ItemUOMConvertion
     {
-        public string ID { get; set; }
-        public long? UomUsage { get; set; }
-        public long? UomPurchase { get; set; }
+        [ExplicitKey]
+        public string UOMConvertionID { get; set; }
+        public long? UOMUsage { get; set; }
+        public long? UOMPurchase { get; set; }
         public decimal? QntyConvertion { get; set; }
         public bool IsActive { get; set; }
         public string CreatedBy { get; set; }
