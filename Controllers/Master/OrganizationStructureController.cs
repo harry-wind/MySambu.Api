@@ -29,7 +29,7 @@ namespace MySambu.Api.Controllers.Master
         [HttpGet]
         public async Task<IActionResult> OrganizationStructure()
         {
-            var result = await _uow.OrganizationStructure.GetAll();
+            var result = await _uow.OrganizationStructure.GetListOrganization();
             return Ok(result);
         }
 
