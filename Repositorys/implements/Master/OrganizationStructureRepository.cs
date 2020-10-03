@@ -8,6 +8,7 @@ using MySambu.Api.Repositorys.Interfaces.Master;
 using Dapper.Contrib.Extensions;
 using MySambu.Api.Dto.Master;
 using Dapper;
+using MySambu.Api.DTO.Master;
 
 namespace MySambu.Api.Repositorys.implements.Master
 {
@@ -104,6 +105,48 @@ namespace MySambu.Api.Repositorys.implements.Master
         public Task<OrganizationStructure> GetByID(string id)
         {
             throw new System.NotImplementedException();
+        }
+
+        public async Task<IEnumerable<OrganizationStructureDto>> GetListOrganization()
+        {
+            var orgs = await Connection.GetAllAsync<OrganizationStructureDto>(transaction: Transaction);
+
+            IList<OrganizationStructureDto> L1 = new List<OrganizationStructureDto>();
+            IList<OrganizationStructureDto> L2 = new List<OrganizationStructureDto>();
+            IList<OrganizationStructureDto> L3 = new List<OrganizationStructureDto>();
+            IList<OrganizationStructureDto> L4 = new List<OrganizationStructureDto>();
+
+            L1 = orgs.Where(o => o.StructureLevel.Equals(1)).ToList();
+            L2 = orgs.Where(o => o.StructureLevel.Equals(2)).ToList();
+            L3 = orgs.Where(o => o.StructureLevel.Equals(3)).ToList();
+            L4 = orgs.Where(o => o.StructureLevel.Equals(4)).ToList();
+
+            IList<OrganizationStructureDto> result = new List<OrganizationStructureDto>();
+
+            foreach (var i3 in L3)
+            {
+                i3.StructureChild = GetChildren(L4, i3.StructureId);
+            }
+
+            foreach (var i2 in L2)
+            {
+                i2.StructureChild = GetChildren(L3, i2.StructureId);
+            }
+
+            foreach (var i1 in L1)
+            {                
+                i1.StructureChild = GetChildren(L2, i1.StructureId);
+                result.Add(i1);                
+            }
+
+            return result;
+        }
+
+        private IList<OrganizationStructureDto> GetChildren(IList<OrganizationStructureDto> source, int parentId)
+        {
+            var children = source.Where(x => x.StructureParentId.Equals(parentId)).ToList();
+            children.ForEach(x => x.StructureChild.Equals(GetChildren(source, x.StructureId)));
+            return children ;
         }
     }
 }
