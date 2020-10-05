@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using MySambu.Api.Models;
 using MySambu.Api.Models.Master;
 using MySambu.Api.Repositorys.Interfaces;
 
@@ -14,7 +15,7 @@ namespace MySambu.Api.Controllers.Master
     [ApiController]
     public class OrganizationStructureController : ControllerBase
     {
-        private static readonly ILog _log = LogManager.GetLogger(typeof(OrganizationStructure));
+        private static readonly ILog _log = LogManager.GetLogger(typeof(OrganizationStructureController));
         private readonly IUnitOfWorks _uow; 
         private readonly IConfiguration _config;
         private IHttpContextAccessor _httpContext;
@@ -80,8 +81,8 @@ namespace MySambu.Api.Controllers.Master
                     StructureOrder = organization.StructureOrder,
                     IsActive = organization.IsActive,
                     OldId = organization.OldId,
-                    LastUpdatedBy = organization.LastUpdatedBy,
-                    LastUpdatedDate = DateTime.Now
+                    UpdatedBy = organization.UpdatedBy,
+                    UpdatedDate = DateTime.Now
                 };
                 await _uow.OrganizationStructure.Update(org);
                 _uow.Commit();
@@ -144,7 +145,9 @@ namespace MySambu.Api.Controllers.Master
         public async Task<IActionResult> GetListDepartment(int companyid)
         {
             var result = await _uow.OrganizationStructure.GetListDept(companyid);
-            return Ok(result);
+            var st = StTrans.SetSt(200, 0, "Succes");
+            return Ok(new{Status = st, Results = result});
+            // return Ok(result);
         }
 
         [AllowAnonymous]
@@ -152,7 +155,10 @@ namespace MySambu.Api.Controllers.Master
         public async Task<IActionResult> GetListSubDepartment(int companyid)
         {
             var result = await _uow.OrganizationStructure.GetListSubDept(companyid);
-            return Ok(result);
+            // return Ok(result);
+            var st = StTrans.SetSt(200, 0, "Succes");
+            return Ok(new{Status = st, Results = result});
+            
         }
     }
 }
