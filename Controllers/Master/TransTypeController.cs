@@ -33,20 +33,19 @@ namespace MySambu.Api.Controllers.Master
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-                // count.CountryId = _uow.GetGUID();
-                // count.CreatedDate = DateTime.Now;
-                // await _uow.CountryRepository.Save(count);
-                
+                dt.TransTypeID = 0;
+                dt.CreatedBy = userby;
                 dt.CreatedDate = DateTime.Now;
-                await _uow.TransTypeRepository.Save(dt);
+                var dts = await _uow.TransTypeRepository.Save(dt);
                
                 _uow.Commit();
 
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<TransType>(dts);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Info("Succes Save");
                 
                 var st = StTrans.SetSt(200, 0, "Succes");
-                return Ok(new{Status = st, Results = dt});
+                return Ok(new{Status = st, Results = dts});
         
             }
             catch (System.Exception e)
@@ -63,18 +62,22 @@ namespace MySambu.Api.Controllers.Master
 
         [Authorize(Policy="RequireAdmin")]
         [HttpPost("Update")]
-        public async Task<IActionResult> UpdatedCountry(Country count){
+        public async Task<IActionResult> UpdatedCountry(TransType dt){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-                // count.CountryId = _uow.GetGUID();
-                count.CreatedDate = DateTime.Now;
-                await _uow.CountryRepository.Save(count);
+                dt.CreatedBy = userby;
+                dt.CreatedDate = DateTime.Now;
+                await _uow.TransTypeRepository.Save(dt);
                
                 _uow.Commit();
-                _log.Info("Succes Updated");
+
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<TransType>(dt);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Info("Succes Update");
                 
                 var st = StTrans.SetSt(200, 0, "Succes");
-                return Ok(new{Status = st, Results = count});
+                return Ok(new{Status = st, Results = dt});
         
             }
             catch (System.Exception e)
@@ -82,7 +85,7 @@ namespace MySambu.Api.Controllers.Master
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
 
-                log4net.LogicalThreadContext.Properties["User"] = count.CreatedBy;
+                log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
             }
