@@ -32,10 +32,10 @@ namespace MySambu.Api.Controllers.Utility
             _httpContext = (IHttpContextAccessor)new HttpContextAccessor();
         }
 
-        [AllowAnonymous]
-        [HttpPost("Register")]
+        [Authorize(Policy="RequireAdmin")] 
+        [HttpPost("Save")]
         public async Task<IActionResult> Register(UserRegisterDto userDto){
-            // string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             userDto.UserId = userDto.UserId.ToLower();
 
             try
@@ -65,7 +65,9 @@ namespace MySambu.Api.Controllers.Utility
                 var usercreate = await _uow.AuthRepository.Register(user);
                 var st2 = StTrans.SetSt(200, 0, "User Berhasil Di Buat");
                 _uow.Commit();
-                // log4net.LogicalThreadContext.Properties["User"] = userby;
+
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<User>(user);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Info("Succes Save");
                 return Ok(new{Status = st2, Results = usercreate});
 
@@ -75,8 +77,66 @@ namespace MySambu.Api.Controllers.Utility
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
 
-                // log4net.LogicalThreadContext.Properties["User"] = userby;
+                 log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<UserRegisterDto>(userDto);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error", e);
+                return Ok(new{Status = st});
+            }
+        }
+
+        [Authorize(Policy="RequireAdmin")]
+        [HttpPost("Update")]
+        public async Task<IActionResult> Update(User cur){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            try
+            {
+               await _uow.AuthRepository.Update(cur);
+               _uow.Commit();
+
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<User>(cur);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+               _log.Info("Succes Update");
+               
+               var st = StTrans.SetSt(200, 0, "Succes");
+               return Ok(new{Status = st, Results = cur});
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<User>(cur);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Error("Error : ", e);
+                return Ok(new{Status = st});
+            }
+        }
+
+        // 
+        [Authorize(Policy="RequireAdmin")]
+        [HttpPost("ChangePassword")]
+        public async Task<IActionResult> ChangePassword(UserChangePasswordDto cur){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            try
+            {
+               await _uow.AuthRepository.ChangePassword(cur.userID, cur.PasswordOld, cur.PasswordNew);
+               _uow.Commit();
+
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<UserChangePasswordDto>(cur);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+               _log.Info("Succes Update");
+               
+               var st = StTrans.SetSt(200, 0, "Succes");
+               return Ok(new{Status = st, Results = cur});
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<UserChangePasswordDto>(cur);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Error("Error : ", e);
                 return Ok(new{Status = st});
             }
         }
@@ -133,6 +193,29 @@ namespace MySambu.Api.Controllers.Utility
                 _log.Error("Error", e);
                 return Ok(new{Status = st});
             }
+        }
+
+        [Authorize(Policy="RequireAdmin")]
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll(){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            try
+            {
+                var dt = await _uow.AuthRepository.GetAll();
+                _uow.Commit();
+               
+                var st = StTrans.SetSt(200, 0, "Succes");
+                return Ok(new{Status = st, Results = dt});
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Error("Error : ", e);
+                return Ok(new{Status = st});
+            }
+
         }
 
         private string GenerateJwtToken(User user)
