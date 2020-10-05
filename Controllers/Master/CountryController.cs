@@ -107,5 +107,29 @@ namespace MySambu.Api.Controllers.Master
             }
 
         }
+
+        [Authorize(Policy="RequireAdmin")]
+        [HttpGet("GetByStatus")]
+        public async Task<IActionResult> GetByStatus(bool IsActive){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            try
+            {
+                var dt = await _uow.CountryRepository.GetByStatus(IsActive);
+                _uow.Commit();
+               
+                var st = StTrans.SetSt(200, 0, "Succes");
+                _log.Info("Get Data Country");
+                return Ok(new{Status = st, Results = dt});
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+                // log4net.LogicalThreadContext.Properties["User"] = sup.CreatedBy;
+                _log.Error("Error : ", e);
+                return Ok(new{Status = st});
+            }
+
+        }
     }
 }
