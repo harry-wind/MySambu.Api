@@ -29,13 +29,13 @@ namespace MySambu.Api.Controllers.Master
         
         [Authorize(Policy="RequireAdmin")]        
         [HttpPost("Save")]
-        public async Task<IActionResult> Save(Country count){
+        public async Task<IActionResult> Save(Warehouse count){
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-                count.CountryId = _uow.GetGUID();
+                count.WHSID = 0;
                 count.CreatedDate = DateTime.Now;
-                await _uow.CountryRepository.Save(count);
+                await _uow.WarehouseRepository.Save(count);
                
                 _uow.Commit();
 
