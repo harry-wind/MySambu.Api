@@ -29,13 +29,15 @@ namespace MySambu.Api.Controllers.Master
         
         [Authorize(Policy="RequireAdmin")]        
         [HttpPost("Save")]
-        public async Task<IActionResult> Save(Country count){
+        public async Task<IActionResult> Save(ItemSubCategory count){
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-                count.CountryId = _uow.GetGUID();
+                // count.CountryId = _uow.GetGUID();
+                count.CreatedBy = userby;
+                count.CategoryID = 0;
                 count.CreatedDate = DateTime.Now;
-                await _uow.CountryRepository.Save(count);
+                await _uow.ItemSubCategoryRepository.Save(count);
                
                 _uow.Commit();
 
@@ -60,15 +62,19 @@ namespace MySambu.Api.Controllers.Master
 
         [Authorize(Policy="RequireAdmin")]
         [HttpPost("Update")]
-        public async Task<IActionResult> UpdatedCountry(Country count){
+        public async Task<IActionResult> UpdatedCountry(ItemSubCategory count){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
                 // count.CountryId = _uow.GetGUID();
+                count.CreatedBy = userby;
                 count.CreatedDate = DateTime.Now;
-                await _uow.CountryRepository.Save(count);
+                await _uow.ItemSubCategoryRepository.Save(count);
                
                 _uow.Commit();
-                _log.Info("Succes Updated");
+
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Info("Succes Save");
                 
                 var st = StTrans.SetSt(200, 0, "Succes");
                 return Ok(new{Status = st, Results = count});
@@ -79,7 +85,7 @@ namespace MySambu.Api.Controllers.Master
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
 
-                log4net.LogicalThreadContext.Properties["User"] = count.CreatedBy;
+                log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
             }
