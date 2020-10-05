@@ -23,6 +23,8 @@ namespace MySambu.Api.Repositorys.Interfaces
         ITransTypeRepository TransTypeRepository { get; }
         IBudgetCategoryRepository BudgetCategoryRepository { get; }
         IWarehouseRepository WarehouseRepository { get; }
+        ICompanyProfileRepository CompanyProfileRepository{ get; }
+        IItemNewRepository ItemNewRepository {get;}
         void Commit();
         void Rollback();
         string GetGUID();

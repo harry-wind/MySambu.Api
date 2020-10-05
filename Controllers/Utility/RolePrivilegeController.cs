@@ -14,13 +14,13 @@ namespace MySambu.Api.Controllers.Utility
 {
     [Route("apimysambu/[controller]")]
     [ApiController]
-    public class RoleController : ControllerBase
+    public class RolePrivilegeController : ControllerBase
     {
-         private static readonly ILog _log = LogManager.GetLogger(typeof(RoleController));
+        private static readonly ILog _log = LogManager.GetLogger(typeof(RolePrivilegeController));
         private readonly IUnitOfWorks _uow;
         private readonly IConfiguration _config;
         private IHttpContextAccessor _httpContext;
-        public RoleController(IUnitOfWorks uow, IConfiguration config)
+        public RolePrivilegeController(IUnitOfWorks uow, IConfiguration config)
         {
             _uow = uow;
             _config = config;
@@ -108,16 +108,16 @@ namespace MySambu.Api.Controllers.Utility
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
             }
+
         }
 
-
         [Authorize(Policy="RequireAdmin")]
-        [HttpGet("GetByStatus")]
-        public async Task<IActionResult> GetByStatus(bool IsActive){
+        [HttpGet("GetByRole")]
+        public async Task<IActionResult> GetByRole(string RoleId){
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-                var dt = await _uow.RoleRepository.GetByStatus(IsActive);
+                var dt = await _uow.RolePrevilegeRepository.GetByID2(RoleId);
                 _uow.Commit();
                
                 var st = StTrans.SetSt(200, 0, "Succes");
@@ -131,6 +131,30 @@ namespace MySambu.Api.Controllers.Utility
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
             }
+
+        }
+
+        [Authorize(Policy="RequireAdmin")]
+        [HttpGet("GetByRoleAndMenu")]
+        public async Task<IActionResult> GetByRoleAndMenu(string RoleId, string MenuId){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            try
+            {
+                var dt = await _uow.RolePrevilegeRepository.GetByID3(RoleId, MenuId);
+                _uow.Commit();
+               
+                var st = StTrans.SetSt(200, 0, "Succes");
+                return Ok(new{Status = st, Results = dt});
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Error("Error : ", e);
+                return Ok(new{Status = st});
+            }
+
         }
     }
 }

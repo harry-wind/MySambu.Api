@@ -25,7 +25,7 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task Delete(string id, string by)
         {
-            await Connection.QueryAsync("Updated tMst_ItemSpec SET IsActive = false, UpdatedBy = @by, UpdatedDate = @tgl WHERE ID = @id ", new { by = by, tgl = DateTime.Now, id = id}, transaction: Transaction);
+            await Connection.QueryAsync("Updated tMst_ItemSpec SET IsActive = false, UpdatedBy = @by, UpdatedDate = @tgl WHERE ItemSpecID = @id ", new { by = by, tgl = DateTime.Now, id = id}, transaction: Transaction);
         }
 
         public async Task<IEnumerable<ItemSpec>> GetAll()
@@ -35,7 +35,7 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task<ItemSpec> GetByID(string id)
         {
-            return await Connection.QueryFirstOrDefaultAsync<ItemSpec>("SELECT * FROM tMst_ItemSpec WHERE ID = @id", new { id = id}, transaction:Transaction);
+            return await Connection.QueryFirstOrDefaultAsync<ItemSpec>("SELECT * FROM tMst_ItemSpec WHERE ItemSpecID = @id", new { id = id}, transaction:Transaction);
         }
 
         public async Task<IEnumerable<ItemSpec>> GetByItem(string itemid)
@@ -43,14 +43,26 @@ namespace MySambu.Api.Repositorys.implements
             return await Connection.QueryAsync<ItemSpec>("SELECT * FROM tMst_ItemSpec WHERE ItemID = @id", new { id = itemid}, transaction:Transaction);
         }
 
-        public async Task Save(ItemSpec obj)
+        public async Task<ItemSpec> Save(ItemSpec obj)
         {
-            await Connection.InsertAsync<ItemSpec>(obj, transaction:Transaction);
+            // await Connection.InsertAsync<ItemSpec>(obj, transaction:Transaction); 
+            var dt = await Connection.QueryFirstOrDefaultAsync<ItemSpec>("pMst_ItemSpecSave", new
+            {
+                ItemSpecID = obj.ItemSpecID,
+                ItemID = obj.ItemID,
+                DetailSpesifikasi = obj.DetailSpesifikasi,
+                IsActive = obj.IsActive,
+                ComputerName = obj.Computer,
+                UserID = obj.CreatedBy,
+                Flag = 0 
+            }, commandType: CommandType.StoredProcedure, transaction: Transaction);
+
+            return dt;
         }
 
         public async Task Update(ItemSpec obj)
         {
-            await Connection.QueryAsync("Updated tMst_ItemSpec SET DetailSpesifikasi = @spec, UpdatedBy = @by, UpdatedDate = @tgl  WHERE ID = @id ", new { spec = obj.DetailSpesifikasi, by = obj.CreatedBy, tgl = DateTime.Now, id = obj.ID}, transaction: Transaction);
+            await Connection.QueryAsync("Updated tMst_ItemSpec SET DetailSpesifikasi = @spec, UpdatedBy = @by, UpdatedDate = @tgl  WHERE ID = @id ", new { spec = obj.DetailSpesifikasi, by = obj.CreatedBy, tgl = DateTime.Now, id = obj.ItemSpecID}, transaction: Transaction);
         }
     }
 }

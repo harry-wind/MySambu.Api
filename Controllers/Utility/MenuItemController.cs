@@ -14,13 +14,13 @@ namespace MySambu.Api.Controllers.Utility
 {
     [Route("apimysambu/[controller]")]
     [ApiController]
-    public class RoleController : ControllerBase
+    public class AppMenuItemController : ControllerBase
     {
-         private static readonly ILog _log = LogManager.GetLogger(typeof(RoleController));
+        private static readonly ILog _log = LogManager.GetLogger(typeof(AppMenuItemController));
         private readonly IUnitOfWorks _uow;
         private readonly IConfiguration _config;
         private IHttpContextAccessor _httpContext;
-        public RoleController(IUnitOfWorks uow, IConfiguration config)
+        public AppMenuItemController(IUnitOfWorks uow, IConfiguration config)
         {
             _uow = uow;
             _config = config;
@@ -33,10 +33,6 @@ namespace MySambu.Api.Controllers.Utility
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-                // count.CountryId = _uow.GetGUID();
-                // count.CreatedDate = DateTime.Now;
-                // await _uow.CountryRepository.Save(count);
-                
                 dt.CreatedDate = DateTime.Now;
                 await _uow.TransTypeRepository.Save(dt);
                
@@ -89,12 +85,12 @@ namespace MySambu.Api.Controllers.Utility
         }
 
         [Authorize(Policy="RequireAdmin")]
-        [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll(){
+        [HttpGet("GetByAppMenu")]
+        public async Task<IActionResult> GetByMenuId(string MenuId){
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-                var dt = await _uow.RoleRepository.GetAll();
+                var dt = await _uow.MenuItemRepository.GetByMenuId(MenuId);
                 _uow.Commit();
                
                 var st = StTrans.SetSt(200, 0, "Succes");
@@ -108,29 +104,8 @@ namespace MySambu.Api.Controllers.Utility
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
             }
+
         }
 
-
-        [Authorize(Policy="RequireAdmin")]
-        [HttpGet("GetByStatus")]
-        public async Task<IActionResult> GetByStatus(bool IsActive){
-            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
-            try
-            {
-                var dt = await _uow.RoleRepository.GetByStatus(IsActive);
-                _uow.Commit();
-               
-                var st = StTrans.SetSt(200, 0, "Succes");
-                return Ok(new{Status = st, Results = dt});
-            }
-            catch (System.Exception e)
-            {
-                var st = StTrans.SetSt(400, 0, e.Message);
-                _uow.Rollback();
-                log4net.LogicalThreadContext.Properties["User"] = userby;
-                _log.Error("Error : ", e);
-                return Ok(new{Status = st});
-            }
-        }
     }
 }

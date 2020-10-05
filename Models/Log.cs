@@ -1,4 +1,5 @@
 using Dapper.Contrib.Extensions;
+using Newtonsoft.Json;
 
 namespace  MySambu.Api.Models
 {
@@ -14,5 +15,12 @@ namespace  MySambu.Api.Models
         public string OldValue { get; set;}
         public string Exception { get; set;}
         public string CreatedBy { get; set;}
+    }
+
+    public static class Logs{
+        public static string ToJson<T>(T obj){
+            return JsonConvert.SerializeObject(obj);
+
+        }
     }
 }

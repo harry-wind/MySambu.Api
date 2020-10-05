@@ -39,14 +39,24 @@ namespace MySambu.Api.Repositorys.implements
             return await Connection.QueryFirstOrDefaultAsync<Role>("SELECT * FROM tUtl_Role WHERE RoleId = @id", new {id = id}, transaction:Transaction);
         }
 
-        public async Task Save(Role obj)
+        public async Task<IEnumerable<Role>> GetByStatus(bool st)
         {
+            return await Connection.QueryAsync<Role>("SELECT * FROM tUtl_Role WHERE IsActive = @id", new {id = st}, transaction:Transaction);
+        }
+
+        public async Task<Role> Save(Role obj)
+        {
+            Role dt = new Role();
             await Connection.InsertAsync<Role>(obj, transaction:Transaction);
+            return dt;
+
         }
 
         public Task Update(Role obj)
         {
             throw new System.NotImplementedException();
         }
+
+       
     }
 }

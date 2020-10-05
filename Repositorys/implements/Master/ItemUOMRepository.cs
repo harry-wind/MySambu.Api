@@ -37,9 +37,25 @@ namespace MySambu.Api.Repositorys.implements
             return await Connection.QueryFirstOrDefaultAsync<ItemUOM>("Select * FROM tMst_ItemUOM where UOMID = @id", new { id = id}, transaction:Transaction);
         }
 
-        public async Task Save(ItemUOM obj)
+        public async Task<IEnumerable<ItemUOM>> GetByStatus(bool st)
         {
-            await Connection.InsertAsync<ItemUOM>(obj, transaction: Transaction);
+            return await Connection.QueryAsync<ItemUOM>("Select * FROM tMst_ItemUOM where IsActive = @id", new { id = st}, transaction:Transaction);
+        }
+
+        public async Task<ItemUOM> Save(ItemUOM obj)
+        {
+            // await Connection.InsertAsync<ItemUOM>(obj, transaction: Transaction);
+            var dt = await Connection.QueryFirstOrDefaultAsync<ItemUOM>("pMst_ItemUomSave", new
+            {
+                UOMID = obj.UOMID,
+                UOMName = obj.UOMName,
+                IsActive = obj.IsActive,
+                Computer = obj.Computer,
+                UserID = obj.CreatedBy,
+                Flag = 0
+            }, commandType: CommandType.StoredProcedure, transaction: Transaction);
+
+            return dt;
         }
 
         public Task Update(ItemUOM obj)

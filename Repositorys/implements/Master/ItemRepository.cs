@@ -37,12 +37,13 @@ namespace MySambu.Api.Repositorys.implements
             return await Connection.QueryFirstOrDefaultAsync<Item>("SELECT * FROM tMst_Item where ItemID = @id", new{id = id}, transaction:Transaction);
         }
 
-        public async Task Save(Item obj)
+        public Task<Item> Save(Item obj)
         {
-            await Connection.QueryAsync("pMst_SupplierSave", new
-            {
+             throw new System.NotImplementedException();
+            // await Connection.QueryAsync("pMst_SupplierSave", new
+            // {
                 
-            }, commandType: CommandType.StoredProcedure, transaction: Transaction);
+            // }, commandType: CommandType.StoredProcedure, transaction: Transaction);
         }
 
         public Task Update(Item obj)

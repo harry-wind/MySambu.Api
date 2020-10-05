@@ -35,18 +35,33 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task<ItemSubCategory> GetByID(string id)
         {
-            return await Connection.QueryFirstOrDefaultAsync<ItemSubCategory>("SELECT * FROM tMst_ItemCategory WHERE SubCategoryGUID = @id", new { id = id}, transaction:Transaction);
+            return await Connection.QueryFirstOrDefaultAsync<ItemSubCategory>("SELECT * FROM tMst_ItemCategory WHERE SubCategoryID = @id", new { id = id}, transaction:Transaction);
         }
 
-        public async Task Save(ItemSubCategory obj)
+        public async Task<ItemSubCategory> Save(ItemSubCategory obj)
         {
-            await Connection.InsertAsync<ItemSubCategory>(obj, transaction:Transaction);
+            // await Connection.InsertAsync<ItemSubCategory>(obj, transaction:Transaction);
+            var dt = await Connection.QueryFirstOrDefaultAsync<ItemSubCategory>("pMst_ItemSubCategorySave", new
+            {
+                SubCategoryID = obj.SubCategoryID,
+                SubCategoryName = obj.SubCategoryName,
+                CategoryID = obj.CategoryID,
+                ACCID = obj.ACCID,
+                IsActive = obj.IsActive,
+                DeptID = obj.DeptID,
+                Computer = obj.Computer,
+                UserID = obj.CreatedBy,
+                Flag = 0 
+            }, commandType: CommandType.StoredProcedure, transaction: Transaction);
+
+            return dt;
         }
 
-        public async Task Update(ItemSubCategory obj)
+        public Task Update(ItemSubCategory obj)
         {
-            await Connection.QueryAsync("UPDATE tMst_ItemSubCategory SET RevisionNo = RevisionNo + 1, SubCategoryName = @CategoryName, CategoryGUID = @CategoryGUID, CategoryID = @CategoryID, ACCID = @ACCID, UpdatedBy = @UpdatedBy, UpdatedDate = @UpdatedDate WHERE SubCategoryGUID = @SubCategoryID",
-                    new { CategoryName = obj.SubCategoryName, ACCID = obj.ACCID, CategoryGUID = obj.CategoryGUID, CategoryID = obj.CategoryID , UpdatedBy = obj.CreatedBy, UpdatedDate = DateTime.Now, SubCategoryGUID = obj.SubCategoryID }, transaction: Transaction);
+             throw new System.NotImplementedException();
+            // await Connection.QueryAsync("UPDATE tMst_ItemSubCategory SET RevisionNo = RevisionNo + 1, SubCategoryName = @CategoryName, CategoryGUID = @CategoryGUID, CategoryID = @CategoryID, ACCID = @ACCID, UpdatedBy = @UpdatedBy, UpdatedDate = @UpdatedDate WHERE SubCategoryGUID = @SubCategoryID",
+            //         new { CategoryName = obj.SubCategoryName, ACCID = obj.ACCID, CategoryGUID = obj.CategoryGUID, CategoryID = obj.CategoryID , UpdatedBy = obj.CreatedBy, UpdatedDate = DateTime.Now, SubCategoryGUID = obj.SubCategoryID }, transaction: Transaction);
         }
     }
 }

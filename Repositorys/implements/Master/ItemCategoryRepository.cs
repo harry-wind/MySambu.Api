@@ -38,10 +38,10 @@ namespace MySambu.Api.Repositorys.implements
             return await Connection.QueryFirstOrDefaultAsync<ItemCategory>("Select * FROM tMst_ItemCategory where CategoryGUID = @id", new { id = id}, transaction: Transaction);
         }
 
-        public async Task Save(ItemCategory obj)
+        public async Task<ItemCategory> Save(ItemCategory obj)
         {
             // await Connection.InsertAsync<ItemCategory>(obj, transaction: Transaction);
-            await Connection.QueryAsync("pMst_ItemCategorySave", new
+            var dt = await Connection.QueryFirstOrDefaultAsync<ItemCategory>("pMst_ItemCategorySave", new
             {
                 CategoryID = obj.CategoryID,
                 CategoryName = obj.CategoryName,
@@ -49,17 +49,19 @@ namespace MySambu.Api.Repositorys.implements
                 NotJurnalIND = obj.NotJurnalIND,
                 RekeningJurnal = obj.RekeningJurnal,
                 IsActive = obj.IsActive,
-                CompanyID = obj.CompanyID,
-                ComputerName = obj.CategoryName,
+                ComputerName = obj.Computer,
                 UserID = obj.CreatedBy,
                 Flag = 0 
             }, commandType: CommandType.StoredProcedure, transaction: Transaction);
+
+            return dt;
         }
 
-        public async Task Update(ItemCategory obj)
+        public Task Update(ItemCategory obj)
         {
-            await Connection.QueryAsync("UPDATE tMst_ItemCategory SET RevisionNo = RevisionNo + 1, CategoryName = @CategoryName, ACCID = @ACCID, NotJurnalIND = @NotJurnalIND, RekeningJurnal = @RekeningJurnal, UpdatedBy = @UpdatedBy, UpdatedDate = @UpdatedDate WHERE CategoryGUID = @CategoryGUID",
-                    new { CategoryName = obj.CategoryName, ACCID = obj.ACCID, NotJurnalIND = obj.NotJurnalIND, RekeningJurnal = obj.RekeningJurnal , UpdatedBy = obj.CreatedBy, UpdatedDate = DateTime.Now, CategoryGUID = obj.CategoryGUID }, transaction: Transaction);
+            throw new System.NotImplementedException();
+            // await Connection.QueryAsync("UPDATE tMst_ItemCategory SET RevisionNo = RevisionNo + 1, CategoryName = @CategoryName, ACCID = @ACCID, NotJurnalIND = @NotJurnalIND, RekeningJurnal = @RekeningJurnal, UpdatedBy = @UpdatedBy, UpdatedDate = @UpdatedDate WHERE CategoryGUID = @CategoryGUID",
+            //         new { CategoryName = obj.CategoryName, ACCID = obj.ACCID, NotJurnalIND = obj.NotJurnalIND, RekeningJurnal = obj.RekeningJurnal , UpdatedBy = obj.CreatedBy, UpdatedDate = DateTime.Now, CategoryGUID = obj.CategoryGUID }, transaction: Transaction);
         }
     }
 }

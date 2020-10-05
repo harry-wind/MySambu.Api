@@ -36,9 +36,14 @@ namespace MySambu.Api.Repositorys.implements
             throw new System.NotImplementedException();
         }
 
-        public async Task Save(Country obj)
+        public async Task<IEnumerable<Country>> GetByStatus(bool IsActive)
         {
-            await Connection.QueryAsync("pMst_CountrySave", new
+            return await Connection.QueryAsync<Country>("SELECT * FROM tMst_Country where IsActive = @IsActive ", new{IsActive = IsActive}, transaction:Transaction);
+        }
+
+        public async Task<Country> Save(Country obj)
+        {
+            var data = await Connection.QueryFirstAsync<Country>("pMst_CountrySave", new
             {
                 CountryID = obj.CountryId,
                 CountryName = obj.CountryName,
@@ -46,6 +51,8 @@ namespace MySambu.Api.Repositorys.implements
                 UserID = obj.CreatedBy,
                 Flag = 0
             }, commandType: CommandType.StoredProcedure, transaction: Transaction);
+
+            return data;
         }
 
         public Task Update(Country obj)

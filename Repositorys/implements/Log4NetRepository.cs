@@ -49,6 +49,11 @@ namespace MySambu.Api.Repositorys.implements
         {
             throw new System.NotImplementedException();
         }
+
+        Task<Log> IBaseRepository<Log>.Save(Log obj)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public class Log4NetAppender : AppenderSkeleton

@@ -29,7 +29,9 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task<IEnumerable<ItemUOMConvertion>> GetAll()
         {
-            return await Connection.GetAllAsync<ItemUOMConvertion>(transaction:Transaction);
+            // return await Connection.GetAllAsync<ItemUOMConvertion>(transaction:Transaction);
+            return await Connection.QueryAsync<ItemUOMConvertion>("SELECT A.*, B.UOMName as UOMUsageName, C.UOMName as UOMPurchaseName FROM tMst_ItemUOMConvertion A INNER JOIN tMst_ItemUOM B ON A.UOMUsage = B.UOMID INNER JOIN tMst_ItemUOM C ON A.UOMPurchase = C.UOMID",
+                transaction:Transaction );
         }
 
         public async Task<ItemUOMConvertion> GetByID(string id)
@@ -37,9 +39,22 @@ namespace MySambu.Api.Repositorys.implements
             return await Connection.QueryFirstOrDefaultAsync<ItemUOMConvertion>("SELECT * FROM tMst_ItemUOMConvertion WHERE UOMConvertionID = @id", new { id = id}, transaction:Transaction);
         }
 
-        public async Task Save(ItemUOMConvertion obj)
+        public async Task<ItemUOMConvertion> Save(ItemUOMConvertion obj)
         {
-            await Connection.InsertAsync<ItemUOMConvertion>(obj, transaction:Transaction);
+            // await Connection.InsertAsync<ItemUOMConvertion>(obj, transaction:Transaction); pMst_tMst_ItemUOMConvertionSave
+            var dt = await Connection.QueryFirstOrDefaultAsync<ItemUOMConvertion>("pMst_tMst_ItemUOMConvertionSave", new
+            {
+                UOMConvertionID = obj.UOMConvertionID,
+                UOMUsage = obj.UOMUsage,
+                UOMPurchase = obj.UOMPurchase,
+                QntyConvertion = obj.QntyConvertion,
+                IsActive = obj.IsActive,
+                Computer = obj.Computer,
+                UserID = obj.CreatedBy,
+                Flag = 0 
+            }, commandType: CommandType.StoredProcedure, transaction: Transaction);
+
+            return dt;
         }
 
         public async Task Update(ItemUOMConvertion obj)

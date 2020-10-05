@@ -3,20 +3,19 @@ using System.Data;
 using System.Threading.Tasks;
 using Dapper;
 using Dapper.Contrib.Extensions;
-using MySambu.Api.Models.Utility;
+using MySambu.Api.Models.Master;
 using MySambu.Api.Repositorys.Interfaces;
 
 namespace MySambu.Api.Repositorys.implements
 {
-    internal class MenuRepository : BaseRepository, IMenuRepository
+    internal class ItemNewRepository : BaseRepository, IItemNewRepository
     {
-
-        public MenuRepository(IDbTransaction transaction) : base(transaction)
+        public ItemNewRepository(IDbTransaction transaction) : base(transaction)
         {
             
         }
 
-        public Task Delete(Menu obj)
+        public Task Delete(ItemNew obj)
         {
             throw new System.NotImplementedException();
         }
@@ -26,25 +25,24 @@ namespace MySambu.Api.Repositorys.implements
             throw new System.NotImplementedException();
         }
 
-        public async Task<IEnumerable<Menu>> GetAll()
+        public async Task<IEnumerable<ItemNew>> GetAll()
         {
-            return await Connection.GetAllAsync<Menu>(transaction:Transaction);
+            return await Connection.GetAllAsync<ItemNew>(transaction:Transaction);
         }
 
-        public Task<Menu> GetByID(string id)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<Menu> Save(Menu obj)
+        public Task<ItemNew> GetByID(string id)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task Update(Menu obj)
+        public Task<ItemNew> Save(ItemNew obj)
         {
             throw new System.NotImplementedException();
         }
 
+        public Task Update(ItemNew obj)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

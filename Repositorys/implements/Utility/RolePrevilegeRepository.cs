@@ -68,9 +68,27 @@ namespace MySambu.Api.Repositorys.implements
             // return await Connection.QueryFirstOrDefaultAsync("SELECT * FROM tUtl_RolePrivilege WHERE RoleId = @id", new {id = id}, transaction:Transaction);
         }
 
-        public async Task Save(RolePrevilege obj)
+        public async Task<IEnumerable<RolePrevilege>> GetByID3(string id, string menuid)
         {
+             var sql = "SELECT A.RoleId, A.GrandId, A.IsGrand, B.MenuId, B.MenuName" +
+                                              " FROM tUtl_RolePrivilege A" +
+                                              " INNER JOIN tUtl_AppMenu B ON A.MenuId=B.MenuId" +
+                                              " WHERE A.RoleId = @roleId and A.MenuId = @menu";
+
+            IEnumerable<RolePrevilege> oList = await Connection.QueryAsync<RolePrevilege, Menu, RolePrevilege>(sql, (rp, m) =>
+            {
+                rp.MenuId = m.MenuId; rp.Menu = m;
+                return rp;
+            }, new {roleId = id, menuid}, transaction:Transaction, splitOn: "MenuId");
+
+            return oList;
+        }
+
+        public async Task<RolePrevilege> Save(RolePrevilege obj)
+        {
+            var dt = new RolePrevilege();
             await Connection.InsertAsync<RolePrevilege>(obj, transaction:Transaction);
+            return dt;
         }
 
         public Task Update(RolePrevilege obj)

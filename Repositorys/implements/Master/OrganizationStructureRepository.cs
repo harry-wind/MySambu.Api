@@ -76,9 +76,16 @@ namespace MySambu.Api.Repositorys.implements.Master
             return result;
         }
 
-        public async Task Save(OrganizationStructure obj)
+        // public async Task Save(OrganizationStructure obj)
+        // {
+        //     await Connection.InsertAsync<OrganizationStructure>(obj, transaction: Transaction);
+        // }
+
+        public async Task<OrganizationStructure> Save(OrganizationStructure obj)
         {
+            OrganizationStructure dt = new OrganizationStructure();
             await Connection.InsertAsync<OrganizationStructure>(obj, transaction: Transaction);
+            return dt;
         }
 
         public async Task Update(OrganizationStructure obj)

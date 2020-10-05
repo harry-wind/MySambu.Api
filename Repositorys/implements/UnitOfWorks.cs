@@ -35,6 +35,8 @@ namespace MySambu.Api.Repositorys.implements
         private ITransTypeRepository _transTypeRepository;
         private IBudgetCategoryRepository _budgetCategoryRepository;
         private IWarehouseRepository _warehouseRepository;
+        private ICompanyProfileRepository _companyProfileRepository;
+        private IItemNewRepository _itemNewRepository;
 
         public IAuthRepository AuthRepository {
             get { return _authRepository ?? (_authRepository = new AuthRepository(_transaction)); }
@@ -110,6 +112,14 @@ namespace MySambu.Api.Repositorys.implements
             get { return _warehouseRepository ?? (_warehouseRepository = new WarehouseRepository(_transaction)); }
         }
 
+        public ICompanyProfileRepository CompanyProfileRepository {
+            get { return _companyProfileRepository ?? (_companyProfileRepository = new CompanyProfileRepository(_transaction)); }
+        }
+
+        public IItemNewRepository ItemNewRepository {
+            get { return _itemNewRepository ?? (_itemNewRepository = new ItemNewRepository(_transaction));}
+        }
+
         private void resetRepository()
         {
             _authRepository = null;
@@ -130,6 +140,8 @@ namespace MySambu.Api.Repositorys.implements
             _transTypeRepository = null;
             _budgetCategoryRepository = null;
             _warehouseRepository = null;
+            _companyProfileRepository = null;
+            _itemNewRepository = null;
         }
 
         public UnitOfWorks(IConfiguration configuration)
@@ -153,8 +165,8 @@ namespace MySambu.Api.Repositorys.implements
                 // cari di nuget
                 SqlClientFactory provider = SqlClientFactory.Instance; 
                 conn = provider.CreateConnection();
-                // string _constring = "Data Source=192.168.12.5; Initial Catalog=SambuERP; User ID=uKoneksi; Password=sm@rt2018; MultipleActiveResultSets=True;";
-                string _constring = "Data Source=192.168.12.55\\LOCAL12; Initial Catalog=SambuERP; User ID=sa; Password=p@ssw0rd; MultipleActiveResultSets=True;";
+                string _constring = "Data Source=192.168.12.5; Initial Catalog=SambuERP; User ID=uKoneksi; Password=sm@rt2018; MultipleActiveResultSets=True;";
+                // string _constring = "Data Source=192.168.12.55\\LOCAL12; Initial Catalog=SambuERP; User ID=sa; Password=p@ssw0rd; MultipleActiveResultSets=True;";
                 // string _constring = "Data Source=(local); Initial Catalog=DocumentDB; User ID=sa; Password=123; MultipleActiveResultSets=True;";
                 conn.ConnectionString = _constring;
             }

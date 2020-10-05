@@ -12,7 +12,6 @@ namespace MySambu.Api.Models.Master
         public int StructureParentId { get; set; }
         public int StructureLevel { get; set; }
         public int StructureOrder { get; set; }
-        public bool IsActive { get; set; }
         public int OldId { get; set; }
 
     }

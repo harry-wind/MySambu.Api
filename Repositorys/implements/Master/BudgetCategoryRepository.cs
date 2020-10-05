@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using Dapper;
 using Dapper.Contrib.Extensions;
+using MySambu.Api.DTO.Master;
 using MySambu.Api.Models.Master;
 using MySambu.Api.Repositorys.Interfaces;
 
@@ -36,10 +38,30 @@ namespace MySambu.Api.Repositorys.implements
             throw new System.NotImplementedException();
         }
 
-        public Task Save(BudgetCategory obj)
+        public async Task<BudgetCategory> Save(BudgetCategory obj)
         {
-            throw new System.NotImplementedException();
+            var data = await Connection.QueryFirstAsync<BudgetCategory>("pMst_BudgetCategory", new
+            {
+                BudgetCategoryID = obj.BudgetCategoryID,
+                BudgetCategoryName = obj.BudgetCategoryName,
+                BudgetCategoryAbbr = obj.BudgetCategoryAbbr,
+                IsActive = obj.IsActive,
+                IsPPBWithOutBudget = obj.IsPPBWithOutBudget,
+                Computer = obj.Computer,
+                UserID = obj.CreatedBy,
+                Flag = 0
+            }, commandType: CommandType.StoredProcedure, transaction: Transaction);
+
+            return data;
         }
+
+        public async Task SaveBudgetAccess(IEnumerable<BudgetAccessDto> budget)
+        {
+            await Connection.ExecuteAsync("DELETE tMst_BudgetCategoryAccess WHERE StrukturID = @StrukturID", budget, transaction:Transaction);
+            await Connection.ExecuteAsync("INSERT INTO tMst_BudgetCategoryAccess(StrukturID, BudgetCategoryID) VALUES (@StrukturID, @BudgetCategoryID)", budget, transaction:Transaction);
+        }
+
+        // pMst_BudgetCategory
 
         public Task Update(BudgetCategory obj)
         {

@@ -5,11 +5,12 @@ namespace MySambu.Api.Models.Master
 {
     public class BaseModel
     {
+        public bool IsActive { get; set; } = true;
         public string CreatedBy { get; set; }
-        [Write(false)]
-        public Nullable<DateTime> CreatedDate { get; set; }
-        public string LastUpdatedBy { get; set; }
-        [Write(false)]
-        public Nullable<DateTime> LastUpdatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; } = DateTime.Now;
+        public string UpdatedBy { get; set; }
+        public DateTime? UpdatedDate { get; set; } = DateTime.Now;
+        public string Computer { get; set; }
+        public DateTime? ComputerDate { get; set; } = DateTime.Now;
     }
 }

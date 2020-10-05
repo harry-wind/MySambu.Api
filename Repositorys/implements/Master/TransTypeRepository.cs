@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using Dapper;
 using Dapper.Contrib.Extensions;
 using MySambu.Api.Models.Master;
 using MySambu.Api.Repositorys.Interfaces;
@@ -36,9 +37,19 @@ namespace MySambu.Api.Repositorys.implements
             throw new System.NotImplementedException();
         }
 
-        public Task Save(TransType obj)
+        public async Task<TransType> Save(TransType obj)
         {
-            throw new System.NotImplementedException();
+            var dt = await Connection.QueryFirstOrDefaultAsync<TransType>("pMst_InventoryTransType", new
+            {
+                TransTypeID = obj.TransTypeID,
+                TransTypeName = obj.TransTypeName,
+                IsActive = obj.IsActive,
+                Computer = obj.Computer,
+                UserID = obj.CreatedBy,
+                Flag = 0
+            }, commandType: CommandType.StoredProcedure, transaction: Transaction);
+
+            return dt;
         }
 
         public Task Update(TransType obj)

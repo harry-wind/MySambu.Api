@@ -4,7 +4,7 @@ using Dapper.Contrib.Extensions;
 namespace MySambu.Api.Models.Master
 {
     [Table("tMst_item")]
-    public class Item
+    public class Item : BaseModel
     {
         [ExplicitKey]
         public string ItemID { get; set; }
@@ -37,12 +37,6 @@ namespace MySambu.Api.Models.Master
         public bool RoutineInd { get; set; }
         public short? MainProductCategoryID { get; set; }
         public string HSNumber { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public string LastUpdatedBy { get; set; }
-        public DateTime? LastUpdatedDate { get; set; }
-        public string Computer { get; set; }
-        public DateTime ComputerDate { get; set; }
         public string ItemIDOld { get; set; }
         public string ind { get; set; }
         public string KSPItemID { get; set; }

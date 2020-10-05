@@ -34,6 +34,18 @@ namespace MySambu.Api.Repositorys.implements
             return true;
         }
 
+        
+        public async Task<bool> ChangePassword(string username, string passwordnew)
+        {
+            var user = await Connection.QueryFirstOrDefaultAsync<User>("Select * FROM tUtl_User WHERE UserId = @userid", new { userid = username }, transaction: Transaction);
+
+            var psnew = CreatePasswordHash(passwordnew, user.PasswordKey);
+            await Connection.QueryAsync("Update tUtl_User SET Password = @psnew, UpdatedBy = @users, UpdatedDate = @tgl Where UserId = @userid",
+                    new { psnew = psnew, users = username, tgl = DateTime.Now,  userid = username}, transaction: Transaction);
+
+            return true;
+        }
+
         public Task Delete(User obj)
         {
             throw new System.NotImplementedException();
@@ -53,9 +65,11 @@ namespace MySambu.Api.Repositorys.implements
             return true;
         }
 
-        public Task Update(User obj)
+        public async Task Update(User obj)
         {
-            throw new System.NotImplementedException();
+            await Connection.QueryAsync("Update tUtl_User SET RoleId = @RoleId, UserName = @UserName, IsActive = @IsActive, UpdatedBy = @users, UpdatedDate = @tgl Where UserId = @userid",
+                new {RoleId = obj.RoleId, UserName = obj.UserName, IsActive = @obj.IsActive, users = obj.CreatedBy,  tgl = DateTime.Now,  userid = obj.UserId }, transaction:Transaction
+            );
         }
 
         public async Task<bool> UserExists(string username)
@@ -96,9 +110,10 @@ namespace MySambu.Api.Repositorys.implements
             return user;
         }
 
-        public async Task Save(User obj)
+        public async Task<User> Save(User obj)
         {
             await Connection.InsertAsync<User>(obj, transaction: Transaction);
+            return null;
         }
 
         private string CreatePasswordHash(string plainText, string key)
@@ -128,5 +143,6 @@ namespace MySambu.Api.Repositorys.implements
         {
             throw new NotImplementedException();
         }
+
     }
 }
