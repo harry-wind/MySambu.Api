@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
@@ -27,18 +28,20 @@ namespace MySambu.Api.Controllers.Master
             _httpContext = (IHttpContextAccessor)new HttpContextAccessor();
         }
         
-        // [Authorize(Policy="RequireAdminRole")]
-        [AllowAnonymous]
+        [Authorize(Policy="RequireAdmin")]
         [HttpPost("Save")]
         public async Task<IActionResult> Save(Currency cur){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-               await _uow.CurrencyRepository.Save(cur);
-               _uow.Commit();
-               _log.Info("Succes Save");
+                await _uow.CurrencyRepository.Save(cur);
+                _uow.Commit();
+                _log.Info("Succes Save");
                
-               var st = StTrans.SetSt(200, 0, "Succes");
-               return Ok(new{Status = st, Result = cur});
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<Currency>(cur);
+                log4net.LogicalThreadContext.Properties["User"] = cur.CreatedBy;
+                var st = StTrans.SetSt(200, 0, "Succes Save");
+                return Ok(new{Status = st, Results = cur});
         
             }
             catch (System.Exception e)
@@ -46,50 +49,27 @@ namespace MySambu.Api.Controllers.Master
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
 
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<Currency>(cur);
                 log4net.LogicalThreadContext.Properties["User"] = cur.CreatedBy;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
             }
         }
 
-        // [Authorize(Policy="RequireAdminRole")]
-        [AllowAnonymous]
-        [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll(){
+        [Authorize(Policy="RequireAdmin")]
+        [HttpPost("Update")]
+        public async Task<IActionResult> Update(Currency cur){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-                var dt = await _uow.CurrencyRepository.GetAll();
+                await _uow.CurrencyRepository.Save(cur);
                 _uow.Commit();
+                _log.Info("Succes Save");
                
-                var st = StTrans.SetSt(200, 0, "Succes");
-                _log.Info("Get Data Country");
-                return Ok(new{Status = st, Result = dt});
-            }
-            catch (System.Exception e)
-            {
-                var st = StTrans.SetSt(400, 0, e.Message);
-                _uow.Rollback();
-                // log4net.LogicalThreadContext.Properties["User"] = sup.CreatedBy;
-                _log.Error("Error : ", e);
-                return Ok(new{Status = st});
-            }
-
-        }
-
-        // CurrencyRate
-
-        // [Authorize(Policy="RequireAdminRole")]
-        [AllowAnonymous]
-        [HttpPost("SaveCurrencyRate")]
-        public async Task<IActionResult> SaveCurrencyRate(IEnumerable<CurrencyRates> cur){
-            try
-            {
-               await _uow.CurrencyRepository.SaveRate(cur);
-               _uow.Commit();
-               _log.Info("Succes Save");
-               
-               var st = StTrans.SetSt(200, 0, "Succes");
-               return Ok(new{Status = st, Result = cur});
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<Currency>(cur);
+                log4net.LogicalThreadContext.Properties["User"] = cur.CreatedBy;
+                var st = StTrans.SetSt(200, 0, "Succes Update");
+                return Ok(new{Status = st, Results = cur});
         
             }
             catch (System.Exception e)
@@ -97,59 +77,34 @@ namespace MySambu.Api.Controllers.Master
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
 
-                // log4net.LogicalThreadContext.Properties["User"] = cur.CreatedBy;
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<Currency>(cur);
+                log4net.LogicalThreadContext.Properties["User"] = cur.CreatedBy;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
             }
         }
 
-        // [Authorize(Policy="RequireAdminRole")]
-        [AllowAnonymous]
-        [HttpPost("UpdateCurrencyRate")]
-        public async Task<IActionResult> UpdateCurrencyRate(IEnumerable<CurrencyRates> cur){
+        [Authorize(Policy="RequireAdmin")]
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll(){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-               await _uow.CurrencyRepository.UpdateRate(cur);
-               _uow.Commit();
-               _log.Info("Succes Update");
+                var dt = await _uow.CurrencyRepository.GetAll();
+                _uow.Commit();
                
-               var st = StTrans.SetSt(200, 0, "Succes");
-               return Ok(new{Status = st, Results = cur});
+                var st = StTrans.SetSt(200, 0, "Succes");
+                return Ok(new{Status = st, Results = dt});
             }
             catch (System.Exception e)
             {
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
-
-                // log4net.LogicalThreadContext.Properties["User"] = cur.CreatedBy;
+                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
             }
+
         }
-
-        [AllowAnonymous]
-        [HttpGet("GetListCurrencyRateByDate")]
-        public async Task<IActionResult> GetListCurrencyRateByDate(DateTime tgl){
-            try
-            {
-               var data = await _uow.CurrencyRepository.GetListCurrencyRateBydate(tgl);
-               _uow.Commit();
-            //    _log.Info("Succes Update");
-               var st = StTrans.SetSt(200, 0, "Succes");
-               return Ok(new{Status = st, Results = data});
-            }
-            catch (System.Exception e)
-            {
-                var st = StTrans.SetSt(400, 0, e.Message);
-                _uow.Rollback();
-
-                // log4net.LogicalThreadContext.Properties["User"] = cur.CreatedBy;
-                _log.Error("Error : ", e);
-                return Ok(new{Status = st});
-            }
-        }
-
-
-
     }
 }
