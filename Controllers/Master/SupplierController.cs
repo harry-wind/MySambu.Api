@@ -8,6 +8,7 @@ using MySambu.Api.Repositorys.Interfaces;
 using MySambu.Api.Models;
 using MySambu.Api.Models.Master;
 using System.ComponentModel;
+using System.Security.Claims;
 
 namespace MySambu.Api.Controllers.Master
 {
@@ -33,12 +34,15 @@ namespace MySambu.Api.Controllers.Master
         // [AllowAnonymous]
         [HttpPost("Save")]
         public async Task<IActionResult> SaveSupplier(Supplier sup){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
+               sup.CreatedBy = userby;
                await _uow.SupplierRepository.Save(sup);
                _uow.Commit();
                _log.Info("Succes Save");
                
+               log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<Supplier>(sup);
                var st = StTrans.SetSt(200, 0, "Succes");
                return Ok(new{Status = st, Results = sup});
         
@@ -48,7 +52,8 @@ namespace MySambu.Api.Controllers.Master
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
 
-                log4net.LogicalThreadContext.Properties["User"] = sup.CreatedBy;
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<Supplier>(sup);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
             }
