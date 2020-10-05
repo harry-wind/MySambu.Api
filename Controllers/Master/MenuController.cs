@@ -13,7 +13,7 @@ namespace MySambu.Api.Controllers.Master
     [ApiController]
     public class MenuController : ControllerBase
     {
-         private static readonly ILog _log = LogManager.GetLogger(typeof(SupplierController));
+        private static readonly ILog _log = LogManager.GetLogger(typeof(MenuController));
         private readonly IUnitOfWorks _uow;
         private readonly IConfiguration _config;
         private IHttpContextAccessor _httpContext;
