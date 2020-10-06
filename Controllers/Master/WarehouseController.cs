@@ -38,6 +38,38 @@ namespace MySambu.Api.Controllers.Master
                 await _uow.WarehouseRepository.Save(count);
                
                 _uow.Commit();
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<Warehouse>(count);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Info("Succes Save");
+                
+                var st = StTrans.SetSt(200, 0, "Succes");
+                return Ok(new{Status = st, Results = count});
+        
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<Warehouse>(count);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Error("Error : ", e);
+                return Ok(new{Status = st});
+            }
+        }
+
+
+        [Authorize(Policy="RequireAdmin")]
+        [HttpPost("Update")]
+        public async Task<IActionResult> UpdatedCountry(Warehouse count){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            try
+            {
+                count.CreatedBy = userby;
+                count.CreatedDate = DateTime.Now;
+                await _uow.WarehouseRepository.Save(count);
+               
+                _uow.Commit();
 
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Info("Succes Save");
@@ -52,34 +84,6 @@ namespace MySambu.Api.Controllers.Master
                 _uow.Rollback();
 
                 log4net.LogicalThreadContext.Properties["User"] = userby;
-                _log.Error("Error : ", e);
-                return Ok(new{Status = st});
-            }
-        }
-
-
-        [Authorize(Policy="RequireAdmin")]
-        [HttpPost("Update")]
-        public async Task<IActionResult> UpdatedCountry(Country count){
-            try
-            {
-                // count.CountryId = _uow.GetGUID();
-                count.CreatedDate = DateTime.Now;
-                await _uow.CountryRepository.Save(count);
-               
-                _uow.Commit();
-                _log.Info("Succes Updated");
-                
-                var st = StTrans.SetSt(200, 0, "Succes");
-                return Ok(new{Status = st, Results = count});
-        
-            }
-            catch (System.Exception e)
-            {
-                var st = StTrans.SetSt(400, 0, e.Message);
-                _uow.Rollback();
-
-                log4net.LogicalThreadContext.Properties["User"] = count.CreatedBy;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
             }
