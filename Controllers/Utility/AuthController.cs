@@ -160,6 +160,8 @@ namespace MySambu.Api.Controllers.Utility
                 
                 await _uow.AuthRepository.Login(users);
                 
+                dt.SignID = users.LoginAutoID;
+                
                 if (dt == null)
                     return Unauthorized();
 
@@ -169,8 +171,8 @@ namespace MySambu.Api.Controllers.Utility
                 _uow.Commit();
 
                 var st = StTrans.SetSt(200, 0, "User Berhasil Login");
-                log4net.LogicalThreadContext.Properties["User"] = userDto.UserId;
-                _log.Info("Telah Login");
+                // log4net.LogicalThreadContext.Properties["User"] = userDto.UserId;
+                // _log.Info("Telah Login");
                 return Ok(new{Status = st, Results = dt});
             }
             catch (System.Exception e)

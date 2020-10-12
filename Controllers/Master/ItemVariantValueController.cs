@@ -36,7 +36,7 @@ namespace MySambu.Api.Controllers.Master
                 dt.VariantValueID = 0;
                 dt.CreatedBy = userby;
                 dt.CreatedDate = DateTime.Now;
-                await _uow.ItemVariantValueRepository.Save(dt);
+                var datas = await _uow.ItemVariantValueRepository.Save(dt);
                
                 _uow.Commit();
 
@@ -45,7 +45,7 @@ namespace MySambu.Api.Controllers.Master
                 _log.Info("Succes Save");
                 
                 var st = StTrans.SetSt(200, 0, "Succes");
-                return Ok(new{Status = st, Results = dt});
+                return Ok(new{Status = st, Results = datas});
         
             }
             catch (System.Exception e)

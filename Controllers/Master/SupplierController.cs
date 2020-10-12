@@ -63,13 +63,13 @@ namespace MySambu.Api.Controllers.Master
         // [AllowAnonymous]
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll(){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
                 var dt = await _uow.SupplierRepository.GetAll();
                 _uow.Commit();
                
                var st = StTrans.SetSt(200, 0, "Succes");
-                _log.Info("Get Data Supplier");
                 return Ok(new{Status = st, Results = dt});
             }
             catch (System.Exception e)
@@ -77,6 +77,7 @@ namespace MySambu.Api.Controllers.Master
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
                 // log4net.LogicalThreadContext.Properties["User"] = sup.CreatedBy;
+                log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
             }
