@@ -85,10 +85,17 @@ namespace MySambu.Api.Repositorys.implements
         {
             var user = await Connection.QueryFirstOrDefaultAsync<User>("Select * FROM tUtl_User WHERE UserId = @userid", new { userid = username }, transaction: Transaction);
 
+            // user.SignID = await Connection.
+
             if (user == null || !VerifyPassword(password, user.Password, user.PasswordKey))
                 return (User)null;
 
             return user;
+        }
+
+        public async Task Login(UserLoginInfoDto userLoginDto)
+        {
+            await Connection.InsertAsync<UserLoginInfoDto>(userLoginDto, transaction:Transaction);
         }
 
         private bool VerifyPassword(string pass, string password, string passwordKey)
@@ -144,5 +151,6 @@ namespace MySambu.Api.Repositorys.implements
             throw new NotImplementedException();
         }
 
+        
     }
 }

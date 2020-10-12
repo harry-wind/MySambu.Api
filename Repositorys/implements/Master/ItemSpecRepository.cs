@@ -50,7 +50,7 @@ namespace MySambu.Api.Repositorys.implements
             {
                 ItemSpecID = obj.ItemSpecID,
                 ItemID = obj.ItemID,
-                DetailSpesifikasi = obj.DetailSpesifikasi,
+                DetailSpesifikasi = obj.Deskripsi,
                 IsActive = obj.IsActive,
                 ComputerName = obj.Computer,
                 UserID = obj.CreatedBy,
@@ -62,7 +62,7 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task Update(ItemSpec obj)
         {
-            await Connection.QueryAsync("Updated tMst_ItemSpec SET DetailSpesifikasi = @spec, UpdatedBy = @by, UpdatedDate = @tgl  WHERE ID = @id ", new { spec = obj.DetailSpesifikasi, by = obj.CreatedBy, tgl = DateTime.Now, id = obj.ItemSpecID}, transaction: Transaction);
+            await Connection.QueryAsync("Updated tMst_ItemSpec SET DetailSpesifikasi = @spec, UpdatedBy = @by, UpdatedDate = @tgl  WHERE ID = @id ", new { spec = obj.Deskripsi, by = obj.CreatedBy, tgl = DateTime.Now, id = obj.ItemSpecID}, transaction: Transaction);
         }
     }
 }

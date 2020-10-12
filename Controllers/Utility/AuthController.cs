@@ -148,6 +148,17 @@ namespace MySambu.Api.Controllers.Utility
             try
             {
                 var dt = await _uow.AuthRepository.Login(userDto.UserId.ToLower(), userDto.Password);
+                UserLoginInfoDto users = new UserLoginInfoDto{
+                    LoginAutoID = _uow.GetGUID(),
+                    LoginDateTime = DateTime.Now,
+                    LoginID = userDto.UserId.ToLower(),
+                    ComputerName = userDto.Computer,
+                    LoginType = "O",
+                    AppVersion = userDto.AppVersion,
+                    IPAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString()
+                };
+                
+                await _uow.AuthRepository.Login(users);
                 
                 if (dt == null)
                     return Unauthorized();

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using MySambu.Api.DTO.Master;
 using MySambu.Api.Models;
 using MySambu.Api.Models.Master;
 using MySambu.Api.Repositorys.Interfaces;
@@ -14,13 +15,13 @@ namespace MySambu.Api.Controllers.Master
 {
     [Route("apimysambu/[controller]")]
     [ApiController]
-    public class ItemNewController : ControllerBase
+    public class ItemController : ControllerBase
     {
-         private static readonly ILog _log = LogManager.GetLogger(typeof(ItemNewController));
+         private static readonly ILog _log = LogManager.GetLogger(typeof(ItemController));
         private readonly IUnitOfWorks _uow;
         private readonly IConfiguration _config;
         private IHttpContextAccessor _httpContext;
-        public ItemNewController(IUnitOfWorks uow, IConfiguration config)
+        public ItemController(IUnitOfWorks uow, IConfiguration config)
         {
             _uow = uow;
             _config = config;
@@ -94,13 +95,39 @@ namespace MySambu.Api.Controllers.Master
             }
         }
 
-        [Authorize(Policy="RequireAdmin")]
+        // [Authorize(Policy="RequireAdmin")]
+        [AllowAnonymous]
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll(){
-            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            // string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            string userby = "fandy";
             try
             {
-                var dt = await _uow.ItemNewRepository.GetAll();
+                var dt = await _uow.ItemRepository.GetAll();
+                _uow.Commit();
+               
+                var st = StTrans.SetSt(200, 0, "Succes");
+                return Ok(new{Status = st, Results = dt});
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Error("Error : ", e);
+                return Ok(new{Status = st});
+            }
+        }
+
+        [Authorize(Policy="RequireAdmin")]
+        // [AllowAnonymous]
+        [HttpPost("GetAllByPage")]
+        public async Task<IActionResult> GetAllByPage(ItemPageDto item){
+            // string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            string userby = "fandy";
+            try
+            {
+                var dt = await _uow.ItemRepository.GetAllByPage(item);
                 _uow.Commit();
                
                 var st = StTrans.SetSt(200, 0, "Succes");

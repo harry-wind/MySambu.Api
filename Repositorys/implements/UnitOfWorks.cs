@@ -37,6 +37,8 @@ namespace MySambu.Api.Repositorys.implements
         private IWarehouseRepository _warehouseRepository;
         private ICompanyProfileRepository _companyProfileRepository;
         private IItemNewRepository _itemNewRepository;
+        private IItemVariantTypeRepository _itemVariantTypeRepository;
+        private IItemVariantValueRepository _itemVariantValueRepository;
 
         public IAuthRepository AuthRepository {
             get { return _authRepository ?? (_authRepository = new AuthRepository(_transaction)); }
@@ -120,6 +122,14 @@ namespace MySambu.Api.Repositorys.implements
             get { return _itemNewRepository ?? (_itemNewRepository = new ItemNewRepository(_transaction));}
         }
 
+        public IItemVariantTypeRepository ItemVariantTypeRepository {
+            get { return _itemVariantTypeRepository ?? (_itemVariantTypeRepository = new ItemVariantTypeRepository(_transaction)); }
+        }
+
+        public IItemVariantValueRepository ItemVariantValueRepository {
+            get { return _itemVariantValueRepository ?? (_itemVariantValueRepository = new ItemVariantValueRepository(_transaction) ); }
+        }
+
         private void resetRepository()
         {
             _authRepository = null;
@@ -142,6 +152,8 @@ namespace MySambu.Api.Repositorys.implements
             _warehouseRepository = null;
             _companyProfileRepository = null;
             _itemNewRepository = null;
+            _itemVariantTypeRepository = null;
+            _itemVariantValueRepository = null;
         }
 
         public UnitOfWorks(IConfiguration configuration)

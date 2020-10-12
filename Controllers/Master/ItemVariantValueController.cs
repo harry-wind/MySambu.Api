@@ -14,13 +14,13 @@ namespace MySambu.Api.Controllers.Master
 {
     [Route("apimysambu/[controller]")]
     [ApiController]
-    public class ItemNewController : ControllerBase
+    public class ItemVariantValueController : ControllerBase
     {
-         private static readonly ILog _log = LogManager.GetLogger(typeof(ItemNewController));
+         private static readonly ILog _log = LogManager.GetLogger(typeof(ItemVariantValueController));
         private readonly IUnitOfWorks _uow;
         private readonly IConfiguration _config;
         private IHttpContextAccessor _httpContext;
-        public ItemNewController(IUnitOfWorks uow, IConfiguration config)
+        public ItemVariantValueController(IUnitOfWorks uow, IConfiguration config)
         {
             _uow = uow;
             _config = config;
@@ -29,18 +29,18 @@ namespace MySambu.Api.Controllers.Master
         
         [Authorize(Policy="RequireAdmin")]        
         [HttpPost("Save")]
-        public async Task<IActionResult> Save(ItemNew dt){
+        public async Task<IActionResult> Save(ItemVariantValue dt){
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-                dt.NewItemID = 0;
+                dt.VariantValueID = 0;
                 dt.CreatedBy = userby;
                 dt.CreatedDate = DateTime.Now;
-                await _uow.ItemNewRepository.Save(dt);
+                await _uow.ItemVariantValueRepository.Save(dt);
                
                 _uow.Commit();
 
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<ItemNew>(dt);
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<ItemVariantValue>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Info("Succes Save");
                 
@@ -53,7 +53,7 @@ namespace MySambu.Api.Controllers.Master
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
 
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<ItemNew>(dt);
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<ItemVariantValue>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
@@ -63,17 +63,17 @@ namespace MySambu.Api.Controllers.Master
 
         [Authorize(Policy="RequireAdmin")]
         [HttpPost("Update")]
-        public async Task<IActionResult> UpdatedCountry(ItemNew dt){
+        public async Task<IActionResult> UpdatedCountry(ItemVariantValue dt){
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
                 dt.CreatedBy = userby;
                 dt.CreatedDate = DateTime.Now;
-                await _uow.ItemNewRepository.Save(dt);
+                await _uow.ItemVariantValueRepository.Save(dt);
                
                 _uow.Commit();
 
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<ItemNew>(dt);
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<ItemVariantValue>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Info("Succes Save");
                 
@@ -87,7 +87,7 @@ namespace MySambu.Api.Controllers.Master
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
 
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<ItemNew>(dt);
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<ItemVariantValue>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
@@ -100,7 +100,30 @@ namespace MySambu.Api.Controllers.Master
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-                var dt = await _uow.ItemNewRepository.GetAll();
+                var dt = await _uow.ItemVariantValueRepository.GetAll();
+                _uow.Commit();
+               
+                var st = StTrans.SetSt(200, 0, "Succes");
+                return Ok(new{Status = st, Results = dt});
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Error("Error : ", e);
+                return Ok(new{Status = st});
+            }
+
+        }
+
+        [Authorize(Policy="RequireAdmin")]
+        [HttpGet("GetByType")]
+        public async Task<IActionResult> GetByType(string TypeID){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            try
+            {
+                var dt = await _uow.ItemVariantValueRepository.GetByType(TypeID);
                 _uow.Commit();
                
                 var st = StTrans.SetSt(200, 0, "Succes");
