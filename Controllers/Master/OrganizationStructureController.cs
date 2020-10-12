@@ -113,7 +113,9 @@ namespace MySambu.Api.Controllers.Master
         public async Task<IActionResult> OrganizationStructureList()
         {
             var result = await _uow.OrganizationStructure.GetAll();
-            return Ok(result);
+            
+            var st = StTrans.SetSt(200, 0, "Succes");
+            return Ok(new{Status = st, Results = result});
         }
 
         [AllowAnonymous]
@@ -121,7 +123,9 @@ namespace MySambu.Api.Controllers.Master
         public async Task<IActionResult> GetListLevel()
         {
             var result = await _uow.OrganizationStructure.GetListStructureLevel();
-            return Ok(result);
+            
+            var st = StTrans.SetSt(200, 0, "Succes");
+            return Ok(new{Status = st, Results = result});
         }
 
         [AllowAnonymous]
@@ -129,7 +133,9 @@ namespace MySambu.Api.Controllers.Master
         public async Task<IActionResult> GetListCompany()
         {
             var result = await _uow.OrganizationStructure.GetListCompany();
-            return Ok(result);
+            
+            var st = StTrans.SetSt(200, 0, "Succes");
+            return Ok(new{Status = st, Results = result});
         }
 
         [AllowAnonymous]
@@ -137,7 +143,9 @@ namespace MySambu.Api.Controllers.Master
         public async Task<IActionResult> GetListDivision(int companyid)
         {
             var result = await _uow.OrganizationStructure.GetListDivision(companyid);
-            return Ok(result);
+            
+            var st = StTrans.SetSt(200, 0, "Succes");
+            return Ok(new{Status = st, Results = result});
         }
 
         [AllowAnonymous]
@@ -145,9 +153,9 @@ namespace MySambu.Api.Controllers.Master
         public async Task<IActionResult> GetListDepartment(int companyid)
         {
             var result = await _uow.OrganizationStructure.GetListDept(companyid);
+            
             var st = StTrans.SetSt(200, 0, "Succes");
             return Ok(new{Status = st, Results = result});
-            // return Ok(result);
         }
 
         [AllowAnonymous]
@@ -155,7 +163,7 @@ namespace MySambu.Api.Controllers.Master
         public async Task<IActionResult> GetListSubDepartment(int companyid)
         {
             var result = await _uow.OrganizationStructure.GetListSubDept(companyid);
-            // return Ok(result);
+            
             var st = StTrans.SetSt(200, 0, "Succes");
             return Ok(new{Status = st, Results = result});
             
