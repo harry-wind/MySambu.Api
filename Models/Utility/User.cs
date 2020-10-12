@@ -23,6 +23,8 @@ namespace MySambu.Api.Models.Utility
         public string Token { get; set; }
         [Write(false)]
         public IEnumerable<RolePrevilege> RolePrivileges { get; set; }
+        [Write(false)]
+        public string SignID { get; set; }
     }
 
     public static class UserFn{

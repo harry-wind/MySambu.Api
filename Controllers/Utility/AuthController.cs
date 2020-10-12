@@ -148,6 +148,19 @@ namespace MySambu.Api.Controllers.Utility
             try
             {
                 var dt = await _uow.AuthRepository.Login(userDto.UserId.ToLower(), userDto.Password);
+                UserLoginInfoDto users = new UserLoginInfoDto{
+                    LoginAutoID = _uow.GetGUID(),
+                    LoginDateTime = DateTime.Now,
+                    LoginID = userDto.UserId.ToLower(),
+                    ComputerName = userDto.Computer,
+                    LoginType = "O",
+                    AppVersion = userDto.AppVersion,
+                    IPAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString()
+                };
+                
+                await _uow.AuthRepository.Login(users);
+                
+                dt.SignID = users.LoginAutoID;
                 
                 if (dt == null)
                     return Unauthorized();
@@ -158,8 +171,8 @@ namespace MySambu.Api.Controllers.Utility
                 _uow.Commit();
 
                 var st = StTrans.SetSt(200, 0, "User Berhasil Login");
-                log4net.LogicalThreadContext.Properties["User"] = userDto.UserId;
-                _log.Info("Telah Login");
+                // log4net.LogicalThreadContext.Properties["User"] = userDto.UserId;
+                // _log.Info("Telah Login");
                 return Ok(new{Status = st, Results = dt});
             }
             catch (System.Exception e)

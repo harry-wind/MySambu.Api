@@ -10,6 +10,7 @@ namespace MySambu.Api.Controllers.Master
     public class CurrencyRates : BaseModel
     {
         public DateTime CurrencyDate { get; set; }
+        public string TypeRate { get; set; }
         public string CurrencyID { get; set; }
         public decimal CurrencyRate { get; set; }
         public bool Modified { get; set; }

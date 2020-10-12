@@ -3,6 +3,7 @@ using System.Data;
 using System.Threading.Tasks;
 using Dapper;
 using Dapper.Contrib.Extensions;
+using MySambu.Api.DTO.Master;
 using MySambu.Api.Models.Master;
 using MySambu.Api.Repositorys.Interfaces;
 
@@ -29,7 +30,21 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task<IEnumerable<Item>> GetAll()
         {
-            return await Connection.GetAllAsync<Item>(transaction:Transaction);
+            // return await Connection.GetAllAsync<Item>(transaction:Transaction);
+            return await Connection.QueryAsync<Item>("SELECT * FROM tMst_Item where IsActive = 0", transaction:Transaction);
+        }
+
+        public async Task<IEnumerable<Item>> GetAllByPage(ItemPageDto itemPageDto)
+        {
+            var data =  new
+            {
+                PageNumber = itemPageDto.PageNumber,
+                RowsOfPage = itemPageDto.RowsOfPage,
+                PageCount = 0
+            };
+            var dt = await Connection.QueryAsync<Item>("pMst_GetItem", data, commandType: CommandType.StoredProcedure, transaction: Transaction);
+
+            return dt;
         }
 
         public async Task<Item> GetByID(string id)

@@ -35,9 +35,29 @@ namespace MySambu.Api.Repositorys.implements
             throw new System.NotImplementedException();
         }
 
-        public Task<ItemNew> Save(ItemNew obj)
+        public async Task<ItemNew> Save(ItemNew obj)
         {
-            throw new System.NotImplementedException();
+            var dt = await Connection.QueryFirstOrDefaultAsync<ItemNew>("pMst_ItemNewSave", new
+            {
+                NewItemID = obj.NewItemID,
+                DeptItemKode = obj.DeptItemCode,
+                NewItemName = obj.NewItemName,
+                NewItemDesc	= obj.NewItemDesc,
+                UOMID = obj.UOMID,
+                SubCategoryID =  obj.SubCategoryID,
+                CurrencyID	 = obj.CurrencyID,
+                UnitPrice = obj.UnitPrice,
+                DeptID = obj.DeptID,
+                Cancel = obj.Cancel,
+                NeedToUpdate = obj.NeedToUpdate,
+                PurchasingRemark = obj.PurchasingRemark,
+                MemoItemNew = obj.MemoItemNew,
+                Computer = obj.Computer,
+                UserID = obj.CreatedBy,
+                Flag = 0 
+            }, commandType: CommandType.StoredProcedure, transaction: Transaction);
+
+            return dt;
         }
 
         public Task Update(ItemNew obj)

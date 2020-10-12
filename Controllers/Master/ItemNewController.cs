@@ -29,18 +29,18 @@ namespace MySambu.Api.Controllers.Master
         
         [Authorize(Policy="RequireAdmin")]        
         [HttpPost("Save")]
-        public async Task<IActionResult> Save(BudgetCategory dt){
+        public async Task<IActionResult> Save(ItemNew dt){
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-                dt.BudgetCategoryID = 0;
+                dt.NewItemID = 0;
                 dt.CreatedBy = userby;
                 dt.CreatedDate = DateTime.Now;
-                await _uow.BudgetCategoryRepository.Save(dt);
+                await _uow.ItemNewRepository.Save(dt);
                
                 _uow.Commit();
 
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetCategory>(dt);
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<ItemNew>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Info("Succes Save");
                 
@@ -53,7 +53,7 @@ namespace MySambu.Api.Controllers.Master
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
 
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetCategory>(dt);
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<ItemNew>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
@@ -63,17 +63,17 @@ namespace MySambu.Api.Controllers.Master
 
         [Authorize(Policy="RequireAdmin")]
         [HttpPost("Update")]
-        public async Task<IActionResult> UpdatedCountry(BudgetCategory dt){
+        public async Task<IActionResult> UpdatedCountry(ItemNew dt){
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
                 dt.CreatedBy = userby;
                 dt.CreatedDate = DateTime.Now;
-                await _uow.BudgetCategoryRepository.Save(dt);
+                await _uow.ItemNewRepository.Save(dt);
                
                 _uow.Commit();
 
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetCategory>(dt);
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<ItemNew>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Info("Succes Save");
                 
@@ -87,7 +87,7 @@ namespace MySambu.Api.Controllers.Master
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
 
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetCategory>(dt);
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<ItemNew>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});

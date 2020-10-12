@@ -7,7 +7,7 @@ namespace MySambu.Api.Models.Master
     public class Item : BaseModel
     {
         [ExplicitKey]
-        public string ItemID { get; set; }
+        public long ItemID { get; set; }
         public string ItemIDSambu { get; set; }
         public string ItemIDSambu_Bak { get; set; }
         public string ItemIDPSS { get; set; }
@@ -46,12 +46,6 @@ namespace MySambu.Api.Models.Master
         public string GroupItemIDBC { get; set; }
         public string UOMBC { get; set; }
         public decimal ConversionUOMBC { get; set; }
-        public decimal lowprice { get; set; }
-        public string Reset_by { get; set; }
-        public DateTime? Reset_date { get; set; }
-        public decimal lowfinal { get; set; }
-        public DateTime? tanggal_final { get; set; }
-        public decimal pricebeforereset { get; set; }
         public int peruom { get; set; }
         public bool CentralisasiInd { get; set; }
         public bool LimbahB3Ind { get; set; }
@@ -66,5 +60,6 @@ namespace MySambu.Api.Models.Master
         public string ItemIDGroup { get; set; }
         public string P1_ItemID { get; set; }
         public string P2_ItemID { get; set; }
+
     }
 }

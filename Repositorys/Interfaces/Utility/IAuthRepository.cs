@@ -11,11 +11,9 @@ namespace MySambu.Api.Repositorys.Interfaces
         Task<User> Register(User user);
         Task<bool> UserExists(string username);
         Task<User> Login(string username, string password);
+        Task Login(UserLoginInfoDto userLoginDto);
         Task<bool> ChangePassword(string username, string passwordold, string passwordnew);
         Task<bool> ChangePassword(string username, string passwordnew);
-        Task<bool> NonActiveUser(string username, string by);
-
-
-        
+        Task<bool> NonActiveUser(string username, string by);        
     }
 }
