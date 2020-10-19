@@ -39,6 +39,10 @@ namespace MySambu.Api.Repositorys.implements
         private IItemNewRepository _itemNewRepository;
         private IItemVariantTypeRepository _itemVariantTypeRepository;
         private IItemVariantValueRepository _itemVariantValueRepository;
+        private IBudgetTargetRepository _budgetTargetRepository;
+        private IBudgetItemRepository _budgetItemRepository;
+        private ITransAccessRepository _transAccessRepository;
+        private IStructureTransAccessRepository _structureTransAccessRepository;
 
         public IAuthRepository AuthRepository {
             get { return _authRepository ?? (_authRepository = new AuthRepository(_transaction)); }
@@ -130,7 +134,38 @@ namespace MySambu.Api.Repositorys.implements
             get { return _itemVariantValueRepository ?? (_itemVariantValueRepository = new ItemVariantValueRepository(_transaction) ); }
         }
 
+        public ITransAccessRepository TransAccessRepository {
+            get { return _transAccessRepository ?? (_transAccessRepository = new TransAccessRepository(_transaction));  }
+        }
+
+        public IStructureTransAccessRepository StructureTransAccessRepository {
+            get { return _structureTransAccessRepository = (_structureTransAccessRepository = new StructureTransAccessRepository(_transaction)); }
+        }
+        
+        // Transaksi
+        public IBudgetTargetRepository BudgetTargetRepository {
+            get { return _budgetTargetRepository ?? (_budgetTargetRepository = new BudgetTargetRepository(_transaction)); }
+        }
+
+        public IBudgetItemRepository BudgetItemRepository {
+            get { return _budgetItemRepository ?? (_budgetItemRepository = new BudgetItemRepository(_transaction));}
+        }
+
+       
+
         private void resetRepository()
+        {
+            resetMasterRepository();   
+            resetTransRepository();
+        }
+
+        private void resetTransRepository()
+        {
+            _budgetTargetRepository = null;
+            _budgetItemRepository = null;
+        }
+
+        private void resetMasterRepository()
         {
             _authRepository = null;
             _supplierRepository = null;
@@ -154,6 +189,8 @@ namespace MySambu.Api.Repositorys.implements
             _itemNewRepository = null;
             _itemVariantTypeRepository = null;
             _itemVariantValueRepository = null;
+            _transAccessRepository = null;
+            _structureTransAccessRepository = null;
         }
 
         public UnitOfWorks(IConfiguration configuration)

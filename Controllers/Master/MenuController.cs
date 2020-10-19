@@ -34,7 +34,6 @@ namespace MySambu.Api.Controllers.Master
                 _uow.Commit();
                
                 var st = StTrans.SetSt(200, 0, "Succes");
-                _log.Info("Get Data Supplier");
                 return Ok(new{Status = st, Results = dt});
             }
             catch (System.Exception e)

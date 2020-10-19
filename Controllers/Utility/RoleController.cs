@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MySambu.Api.Models;
 using MySambu.Api.Models.Master;
+using MySambu.Api.Models.Utility;
 using MySambu.Api.Repositorys.Interfaces;
 
 namespace MySambu.Api.Controllers.Utility
@@ -29,7 +30,7 @@ namespace MySambu.Api.Controllers.Utility
         
         [Authorize(Policy="RequireAdmin")]        
         [HttpPost("Save")]
-        public async Task<IActionResult> Save(TransType dt){
+        public async Task<IActionResult> Save(Role dt){
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
@@ -37,11 +38,13 @@ namespace MySambu.Api.Controllers.Utility
                 // count.CreatedDate = DateTime.Now;
                 // await _uow.CountryRepository.Save(count);
                 
+                dt.RoleId = _uow.GetGUID();
+                dt.CreatedBy = userby;
                 dt.CreatedDate = DateTime.Now;
-                await _uow.TransTypeRepository.Save(dt);
+                await _uow.RoleRepository.Save(dt);
                
                 _uow.Commit();
-
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<Role>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Info("Succes Save");
                 
@@ -53,7 +56,7 @@ namespace MySambu.Api.Controllers.Utility
             {
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
-
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<Role>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
@@ -63,14 +66,18 @@ namespace MySambu.Api.Controllers.Utility
 
         [Authorize(Policy="RequireAdmin")]
         [HttpPost("Update")]
-        public async Task<IActionResult> UpdatedCountry(Country count){
+        public async Task<IActionResult> UpdatedCountry(Role count){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
                 // count.CountryId = _uow.GetGUID();
+                count.CreatedBy = userby;
                 count.CreatedDate = DateTime.Now;
-                await _uow.CountryRepository.Save(count);
+                await _uow.RoleRepository.Save(count);
                
                 _uow.Commit();
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<Role>(count);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Info("Succes Updated");
                 
                 var st = StTrans.SetSt(200, 0, "Succes");
@@ -81,8 +88,8 @@ namespace MySambu.Api.Controllers.Utility
             {
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
-
-                log4net.LogicalThreadContext.Properties["User"] = count.CreatedBy;
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<Role>(count);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
             }
