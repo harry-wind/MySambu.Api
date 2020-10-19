@@ -69,7 +69,7 @@ namespace MySambu.Api.Controllers.Master
                 var dt = await _uow.SupplierRepository.GetAll();
                 _uow.Commit();
                
-               var st = StTrans.SetSt(200, 0, "Succes");
+                var st = StTrans.SetSt(200, 0, "Succes");
                 return Ok(new{Status = st, Results = dt});
             }
             catch (System.Exception e)

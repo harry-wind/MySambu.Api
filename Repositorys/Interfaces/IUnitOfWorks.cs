@@ -27,6 +27,10 @@ namespace MySambu.Api.Repositorys.Interfaces
         IItemNewRepository ItemNewRepository {get;}
         IItemVariantTypeRepository ItemVariantTypeRepository {get;}
         IItemVariantValueRepository ItemVariantValueRepository {get;}
+        ITransAccessRepository TransAccessRepository { get; }
+        IStructureTransAccessRepository StructureTransAccessRepository { get; }
+        IBudgetTargetRepository BudgetTargetRepository { get; }
+        IBudgetItemRepository BudgetItemRepository { get; }
         void Commit();
         void Rollback();
         string GetGUID();
