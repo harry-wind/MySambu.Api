@@ -41,7 +41,7 @@ namespace MySambu.Api.Repositorys.implements
         {
             var dt = await Connection.QueryFirstOrDefaultAsync<TransAccess>("pUtl_TransAcces", new
             {
-                TransAccesID = obj.TransAccessID,
+                TransAccessID = obj.TransAccessID,
                 TransAccesName = obj.TransAccessName,
                 IsActive = obj.IsActive,
                 Computer = obj.Computer,
