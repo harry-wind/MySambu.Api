@@ -119,6 +119,29 @@ namespace MySambu.Api.Controllers.Master
             }
         }
 
+        [AllowAnonymous]
+        [HttpPost("GetPageCount")]
+        public async Task<IActionResult> GetPageCount(int rowOfPage){
+            // string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            string userby = "fandy";
+            try
+            {
+                var dt = await _uow.ItemRepository.GetPageCount(rowOfPage);
+                _uow.Commit();
+               
+                var st = StTrans.SetSt(200, dt, "Success");
+                return Ok(new{Status = st, Results = dt});
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Error("Error : ", e);
+                return Ok(new{Status = st});
+            }
+        }
+
         [Authorize(Policy="RequireAdmin")]
         // [AllowAnonymous]
         [HttpPost("GetAllByPage")]
@@ -128,9 +151,10 @@ namespace MySambu.Api.Controllers.Master
             try
             {
                 var dt = await _uow.ItemRepository.GetAllByPage(item);
+                int pc = await _uow.ItemRepository.GetPageCount(item.RowsOfPage);          
                 _uow.Commit();
                
-                var st = StTrans.SetSt(200, 0, "Succes");
+                var st = StTrans.SetSt(200, pc, "Success");
                 return Ok(new{Status = st, Results = dt});
             }
             catch (System.Exception e)

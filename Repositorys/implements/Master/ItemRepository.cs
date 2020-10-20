@@ -36,11 +36,12 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task<IEnumerable<Item>> GetAllByPage(ItemPageDto itemPageDto)
         {
+            var pc = await Connection.ExecuteScalarAsync("Select dbo.fcMst_GetItemPageCount (@RowsOfPage)", new {RowsOfPage = itemPageDto.RowsOfPage}, transaction: Transaction);
             var data =  new
             {
                 PageNumber = itemPageDto.PageNumber,
                 RowsOfPage = itemPageDto.RowsOfPage,
-                PageCount = 0
+                PageCount = pc
             };
             var dt = await Connection.QueryAsync<Item>("pMst_GetItem", data, commandType: CommandType.StoredProcedure, transaction: Transaction);
 
@@ -64,6 +65,11 @@ namespace MySambu.Api.Repositorys.implements
         public Task Update(Item obj)
         {
             throw new System.NotImplementedException();
+        }
+
+        public async Task<int> GetPageCount(int rowOfpage)
+        {
+            return (int)await Connection.ExecuteScalarAsync("Select dbo.fcMst_GetItemPageCount (@RowsOfPage)", new {RowsOfPage = rowOfpage}, transaction: Transaction);
         }
     }
 }

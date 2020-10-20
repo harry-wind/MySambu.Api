@@ -3,7 +3,7 @@ namespace MySambu.Api.Models
 
     public class Status{
         public int Code { get; set; }
-        public int PasgesCount { get; set; }
+        public int PageCount { get; set; }
         public string Description { get; set; }
     }
 
@@ -11,7 +11,7 @@ namespace MySambu.Api.Models
     {
         public static Status SetSt(int a, int b, string c){
             Status st = new Status {
-                Code = a, PasgesCount = b, Description = c
+                Code = a, PageCount = b, Description = c
             };
             return st;
         }
