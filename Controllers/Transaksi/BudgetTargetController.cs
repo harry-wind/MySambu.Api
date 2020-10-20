@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using log4net;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MySambu.Api.DTO.Master;
+using MySambu.Api.DTO.Transaksi.Budget;
 using MySambu.Api.Models;
 using MySambu.Api.Models.Master;
 using MySambu.Api.Models.Transaksi;
@@ -19,7 +21,7 @@ namespace MySambu.Api.Controllers.Transaksi
     [ApiController]
     public class BudgetTargetController : ControllerBase
     {
-         private static readonly ILog _log = LogManager.GetLogger(typeof(BudgetTargetController));
+        private static readonly ILog _log = LogManager.GetLogger(typeof(BudgetTargetController));
         private readonly IUnitOfWorks _uow;
         private readonly IConfiguration _config;
         private IHttpContextAccessor _httpContext;
@@ -29,100 +31,100 @@ namespace MySambu.Api.Controllers.Transaksi
             _config = config;
             _httpContext = (IHttpContextAccessor)new HttpContextAccessor();
         }
-        
-        [Authorize(Policy="RequireAdmin")]        
+
+        [Authorize(Policy = "RequireAdmin")]
         [HttpPost("Save")]
-        public async Task<IActionResult> Save(BudgetHdr dt){
+        public async Task<IActionResult> Save(BudgetTargetHdrDto dt)
+        {
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
                 dt.BudgetHdrGuid = _uow.GetGUID();
-                dt.BudgetPeriod = new DateTime(dt.BudgetPeriod.Year, dt.BudgetPeriod.Month, 1); 
+                dt.BudgetPeriod = new DateTime(dt.BudgetPeriod.Year, dt.BudgetPeriod.Month, 1);
                 dt.CreatedBy = userby;
-                foreach(var data in dt.BudgetDept){
-                    data.BudgetDeptGuid = _uow.GetGUID();
-                    data.BudgetHdrGuid = dt.BudgetHdrGuid;
-                    data.CreatedBy = userby;
-                    foreach(var dd in data.BudgetCategory){
-                        dd.BudgetCatGuid = _uow.GetGUID();
-                        dd.BudgetDeptGuid = data.BudgetDeptGuid;
-                        dd.CreatedBy = userby;
+                long deptguid = 0; string guid = "";
+                dt.BudgetTargetItem = dt.BudgetTargetItem.OrderBy(r => r.DeptId).ToList();
+                foreach (var data in dt.BudgetTargetItem)
+                {
+                    if (deptguid != data.DeptId)
+                    {
+                        guid =  _uow.GetGUID();
+                        deptguid = data.DeptId;
                     }
+                    
+                    data.BudgetDeptGuid = guid;
+                    data.BudgetCatGuid = _uow.GetGUID();
                 }
-                
                 var dts = await _uow.BudgetTargetRepository.Save(dt);
                 _uow.Commit();
 
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetHdr>(dts);
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetTargetHdrDto>(dts);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Info("Succes Save");
-                
+
                 var st = StTrans.SetSt(200, 0, "Succes");
-                return Ok(new{Status = st, Results = dts});
-        
+                return Ok(new { Status = st, Results = dts });
+
             }
             catch (System.Exception e)
             {
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
 
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetHdr>(dt);
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetTargetHdrDto>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
-                return Ok(new{Status = st});
+                return Ok(new { Status = st });
             }
         }
 
-        [Authorize(Policy="RequireAdmin")]
+        [Authorize(Policy = "RequireAdmin")]
         [HttpPost("Update")]
-        public async Task<IActionResult> UpdatedCountry(BudgetHdr dt){
+        public async Task<IActionResult> UpdatedCountry(BudgetTargetHdrDto dt)
+        {
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
                 dt.CreatedBy = userby;
-                foreach(var data in dt.BudgetDept){
-                    data.CreatedBy = userby;
-                    foreach(var dd in data.BudgetCategory){
-                        dd.CreatedBy = userby;
-                    }
-                }
-                
-                await _uow.BudgetTargetRepository.Update(dt);
                
+
+                await _uow.BudgetTargetRepository.Save(dt);
+
                 _uow.Commit();
 
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetHdr>(dt);
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetTargetHdrDto>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Info("Succes Save");
-                
-                
+
+
                 var st = StTrans.SetSt(200, 0, "Succes");
-                return Ok(new{Status = st, Results = dt});
-        
+                return Ok(new { Status = st, Results = dt });
+
             }
             catch (System.Exception e)
             {
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
 
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetHdr>(dt);
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetTargetHdrDto>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
-                return Ok(new{Status = st});
+                return Ok(new { Status = st });
             }
         }
 
-        [Authorize(Policy="RequireAdmin")]
+        [Authorize(Policy = "RequireAdmin")]
         [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll(){
+        public async Task<IActionResult> GetAll()
+        {
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-                var dt = await _uow.BudgetCategoryRepository.GetAll();
+                var dt = await _uow.BudgetTargetRepository.GetAllTarget();
                 _uow.Commit();
-               
+
                 var st = StTrans.SetSt(200, 0, "Succes");
-                return Ok(new{Status = st, Results = dt});
+                return Ok(new { Status = st, Results = dt });
             }
             catch (System.Exception e)
             {
@@ -130,7 +132,31 @@ namespace MySambu.Api.Controllers.Transaksi
                 _uow.Rollback();
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
-                return Ok(new{Status = st});
+                return Ok(new { Status = st });
+            }
+
+        }
+
+        [Authorize(Policy = "RequireAdmin")]
+        [HttpGet("GetByPeriodID")]
+        public async Task<IActionResult> GetByPeriodID(string id)
+        {
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            try
+            {
+                var dt = await _uow.BudgetTargetRepository.GetByIDs(id);
+                _uow.Commit();
+
+                var st = StTrans.SetSt(200, 0, "Succes");
+                return Ok(new { Status = st, Results = dt });
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Error("Error : ", e);
+                return Ok(new { Status = st });
             }
 
         }
