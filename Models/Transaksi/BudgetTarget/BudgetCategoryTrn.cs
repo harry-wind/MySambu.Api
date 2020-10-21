@@ -13,6 +13,7 @@ namespace MySambu.Api.Models.Transaksi
         public int? RevisionNo { get; set; } = 0;
         public decimal? TotalTarget { get; set; } = 0;
         public bool? IsComplete { get; set; } = false;
+        public string Proposal { get; set; }
 
     }
 }

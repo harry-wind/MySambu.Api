@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using log4net;
@@ -116,10 +117,12 @@ namespace MySambu.Api.Controllers.Transaksi
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll(){
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            string Role = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Role).Value;
             try
             {
-                var dt = await _uow.BudgetCategoryRepository.GetAll();
+                var dt = await _uow.BudgetItemRepository.GetAll(Role);
                 _uow.Commit();
+                dt = dt.OrderByDescending(f => f.BudgetPeriod);
                
                 var st = StTrans.SetSt(200, 0, "Succes");
                 return Ok(new{Status = st, Results = dt});

@@ -137,6 +137,7 @@ namespace MySambu.Api.Repositorys.implements
             {
                 BudgetHdrGuid = obj.BudgetHdrGuid,
                 BudgetPeriod = obj.BudgetPeriod,
+                Total = obj.Total,
                 UserID = obj.CreatedBy,
                 Computer = obj.Computer,
                 Flag = 0
@@ -152,7 +153,6 @@ namespace MySambu.Api.Repositorys.implements
                     BudgetCatGuid = dt.BudgetCatGuid,
                     BudgetCategoryID = dt.BudgetCategoryID,
                     TotalTarget = dt.TotalTarget,
-                    IsComplete = dt.IsComplete,
                     UserID = obj.CreatedBy,
                     Computer = obj.Computer,
                     Flag = 0

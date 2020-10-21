@@ -3,7 +3,7 @@ using MySambu.Api.Models.Master;
 
 namespace MySambu.Api.Models.Transaksi.BudgetItem
 {
-    public class BudgetItem : BaseModel
+    public class BudgetDtlItem
     {
         public string BudgetItemGuid { get; set; }
         public string BudgetCatGuid { get; set; }
@@ -25,7 +25,7 @@ namespace MySambu.Api.Models.Transaksi.BudgetItem
         public DateTime? M2ApprovalDate { get; set; }
         public string M2ApprovalRemark { get; set; }
         public string ItemIDOld { get; set; }
-        public string Proposal { get; set; }
+        public decimal TotalHarga { get { return Qnty * UnitPrice;}}       
 
     }
 }
