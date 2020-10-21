@@ -7,7 +7,7 @@ namespace MySambu.Api.Models.Master
     public class Item : BaseModel
     {
         [ExplicitKey]
-        public long ItemID { get; set; }
+        public string ItemID { get; set; }
         public string ItemIDSambu { get; set; }
         public string ItemIDSambu_Bak { get; set; }
         public string ItemIDPSS { get; set; }

@@ -9,7 +9,7 @@ namespace MySambu.Api.Models.Master
     {
         [ExplicitKey]
         public long ItemSpecID { get; set; }
-        public long ItemID { get; set; }
+        public string ItemID { get; set; }
         public string UOM { get; set; }
         public decimal? QntyConvert { get; set; }
         public string Deskripsi { get; set; }
