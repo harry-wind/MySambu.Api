@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Dapper;
 using Dapper.Contrib.Extensions;
@@ -70,6 +71,13 @@ namespace MySambu.Api.Repositorys.implements
         public async Task<int> GetPageCount(int rowOfpage)
         {
             return (int)await Connection.ExecuteScalarAsync("Select dbo.fcMst_GetItemPageCount (@RowsOfPage)", new {RowsOfPage = rowOfpage}, transaction: Transaction);
+        }
+
+        public async Task<IEnumerable<Item>> GetByName(string param)
+        {
+            string sql = @"SELECT * FROM tMst_Item Where ItemName like '%' + @param + '%'";
+            
+            return await Connection.QueryAsync<Item>(sql, new {Param = param}, transaction:Transaction);
         }
     }
 }

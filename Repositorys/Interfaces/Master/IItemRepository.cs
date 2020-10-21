@@ -8,6 +8,7 @@ namespace MySambu.Api.Repositorys.Interfaces
     public interface IItemRepository : IBaseRepository<Item>
     {
         Task<IEnumerable<Item>> GetAllByPage(ItemPageDto itemPageDto);
+        Task<IEnumerable<Item>> GetByName(string param);
         Task<int> GetPageCount(int rowOfPage);
     }
 }
