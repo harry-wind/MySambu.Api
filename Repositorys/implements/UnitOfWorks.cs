@@ -43,6 +43,7 @@ namespace MySambu.Api.Repositorys.implements
         private IBudgetItemRepository _budgetItemRepository;
         private ITransAccessRepository _transAccessRepository;
         private IStructureTransAccessRepository _structureTransAccessRepository;
+        private IMainProductCategoryRepository _mainProductCategoryRepository;
 
         public IAuthRepository AuthRepository {
             get { return _authRepository ?? (_authRepository = new AuthRepository(_transaction)); }
@@ -153,6 +154,10 @@ namespace MySambu.Api.Repositorys.implements
 
        
 
+        public IMainProductCategoryRepository MainProductCategoryRepository {
+            get { return _mainProductCategoryRepository ?? (_mainProductCategoryRepository = new MainProductCategoryRepository(_transaction)); }
+        }
+
         private void resetRepository()
         {
             resetMasterRepository();   
@@ -191,6 +196,7 @@ namespace MySambu.Api.Repositorys.implements
             _itemVariantValueRepository = null;
             _transAccessRepository = null;
             _structureTransAccessRepository = null;
+            _mainProductCategoryRepository = null;
         }
 
         public UnitOfWorks(IConfiguration configuration)

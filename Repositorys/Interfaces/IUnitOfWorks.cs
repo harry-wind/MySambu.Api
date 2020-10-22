@@ -31,6 +31,8 @@ namespace MySambu.Api.Repositorys.Interfaces
         IStructureTransAccessRepository StructureTransAccessRepository { get; }
         IBudgetTargetRepository BudgetTargetRepository { get; }
         IBudgetItemRepository BudgetItemRepository { get; }
+        IMainProductCategoryRepository MainProductCategoryRepository { get; }
+
         void Commit();
         void Rollback();
         string GetGUID();
