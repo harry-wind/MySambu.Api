@@ -17,7 +17,7 @@ namespace MySambu.Api.Controllers.Master
     [ApiController]
     public class ItemController : ControllerBase
     {
-         private static readonly ILog _log = LogManager.GetLogger(typeof(ItemController));
+        private static readonly ILog _log = LogManager.GetLogger(typeof(ItemController));
         private readonly IUnitOfWorks _uow;
         private readonly IConfiguration _config;
         private IHttpContextAccessor _httpContext;
@@ -30,22 +30,21 @@ namespace MySambu.Api.Controllers.Master
         
         [Authorize(Policy="RequireAdmin")]        
         [HttpPost("Save")]
-        public async Task<IActionResult> Save(ItemNew dt){
+        public async Task<IActionResult> Save(Item dt, int newItemID){
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-                dt.NewItemID = 0;
                 dt.CreatedBy = userby;
                 dt.CreatedDate = DateTime.Now;
-                await _uow.ItemNewRepository.Save(dt);
+                await _uow.ItemRepository.Save(dt, newItemID);
                
                 _uow.Commit();
 
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<ItemNew>(dt);
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<Item>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
-                _log.Info("Succes Save");
+                _log.Info("Successfully Saved");
                 
-                var st = StTrans.SetSt(200, 0, "Succes");
+                var st = StTrans.SetSt(200, 0, "Success");
                 return Ok(new{Status = st, Results = dt});
         
             }
@@ -54,7 +53,7 @@ namespace MySambu.Api.Controllers.Master
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
 
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<ItemNew>(dt);
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<Item>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
@@ -64,22 +63,22 @@ namespace MySambu.Api.Controllers.Master
 
         [Authorize(Policy="RequireAdmin")]
         [HttpPost("Update")]
-        public async Task<IActionResult> UpdatedCountry(ItemNew dt){
+        public async Task<IActionResult> Update(Item dt, int newItemID){
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
                 dt.CreatedBy = userby;
                 dt.CreatedDate = DateTime.Now;
-                await _uow.ItemNewRepository.Save(dt);
+                await _uow.ItemRepository.Save(dt, newItemID);
                
                 _uow.Commit();
 
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<ItemNew>(dt);
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<Item>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
-                _log.Info("Succes Save");
+                _log.Info("Successfully Updated");
                 
                 
-                var st = StTrans.SetSt(200, 0, "Succes");
+                var st = StTrans.SetSt(200, 0, "Success");
                 return Ok(new{Status = st, Results = dt});
         
             }
@@ -88,7 +87,7 @@ namespace MySambu.Api.Controllers.Master
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
 
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<ItemNew>(dt);
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<Item>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
@@ -122,8 +121,7 @@ namespace MySambu.Api.Controllers.Master
         [AllowAnonymous]
         [HttpGet("GetByName/{param}")]
         public async Task<IActionResult> GetByName(string param){
-            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
-            //string userby = "fandy";
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;            
             try
             {
                 var dt = await _uow.ItemRepository.GetByName(param);

@@ -56,11 +56,51 @@ namespace MySambu.Api.Repositorys.implements
 
         public Task<Item> Save(Item obj)
         {
-             throw new System.NotImplementedException();
-            // await Connection.QueryAsync("pMst_SupplierSave", new
-            // {
-                
-            // }, commandType: CommandType.StoredProcedure, transaction: Transaction);
+            throw new System.NotImplementedException();
+        }
+
+        public async Task<Item> Save(Item oItem, int newItemID)
+        {
+            // throw new System.NotImplementedException();
+            var dt = await Connection.QueryFirstOrDefaultAsync<Item>("pMst_Item", new
+            {
+                ItemID = oItem.ItemID,
+                ItemIDSambu =oItem.ItemIDSambu,
+                ItemIDPSS = oItem.ItemIDPSS,
+                ItemIDKSP = oItem.ItemIDKSP,
+                NewItemID = newItemID,
+                ItemName = oItem.ItemName,
+                HSNumber = oItem.HSNumber,
+                OldItemId = oItem.OldItemID,
+                AlternateID = oItem.AlternateID,
+                ItemDesc = oItem.ItemDesc,
+                SubCategoryID = oItem.SubCategoryID,
+                MainProductCategory = oItem.MainProductCategoryID,
+                UOMID = oItem.UOMID,
+                DecimalInQnty = oItem.DecimalInQnty,
+                AVGMonthlyUsage = oItem.AVGMonthlyUsage,
+                LeadTime = oItem.LeadTime,
+                MinStock = oItem.MinStock,
+                MaxStock = oItem.MaxStock,
+                IsActive = oItem.IsActive,
+                StockItem = oItem.StockItem,
+                Important = oItem.Important,
+                BPBApprovalByManagement = oItem.BPBApprovalByManagement,
+                PPBAutoApproval = oItem.PPBAutoApproval,
+                PPBAutoApproval2 = oItem.PPBAutoApproval2,
+                KawasanBerikatInd = oItem.KawasanBerikatInd,
+                RoutineInd = oItem.RoutineInd,
+                CentralisasiInd = oItem.CentralisasiInd,
+                LimbahB3Ind = oItem.LimbahB3Ind,
+                DeptID = oItem.DeptID,
+                IsFixedAsset = oItem.isFixedAsset,
+                ImagePath = oItem.ImagePath,
+                UserID = oItem.CreatedBy,
+                Info = "",
+                Flag = 0 
+            }, commandType: CommandType.StoredProcedure, transaction: Transaction);
+
+            return dt;
         }
 
         public Task Update(Item obj)
@@ -75,9 +115,10 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task<IEnumerable<Item>> GetByName(string param)
         {
-            string sql = @"SELECT * FROM tMst_Item Where ItemName like '%' + @param + '%'";
+            string sql = @"SELECT TOP 200 * FROM tMst_Item Where ItemName like '%' + @param + '%'";
             
             return await Connection.QueryAsync<Item>(sql, new {Param = param}, transaction:Transaction);
         }
+
     }
 }

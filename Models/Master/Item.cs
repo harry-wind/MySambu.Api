@@ -3,7 +3,7 @@ using Dapper.Contrib.Extensions;
 
 namespace MySambu.Api.Models.Master
 {
-    [Table("tMst_item")]
+    [Table("tMst_Item")]
     public class Item : BaseModel
     {
         [ExplicitKey]
@@ -11,6 +11,7 @@ namespace MySambu.Api.Models.Master
         public string ItemIDSambu { get; set; }
         public string ItemIDSambu_Bak { get; set; }
         public string ItemIDPSS { get; set; }
+        public string ItemIDKSP { get; set; }
         public short RevisionNo { get; set; }
         public string ItemName { get; set; }
         public string ItemNameChinese { get; set; }
@@ -26,7 +27,6 @@ namespace MySambu.Api.Models.Master
         public decimal MaxStock { get; set; }
         public decimal? AvgUsage { get; set; }
         public byte DecimalInQnty { get; set; }
-        public bool InActive { get; set; }
         public bool StockItem { get; set; }
         public bool Important { get; set; }
         public bool PPICPriority { get; set; }
@@ -39,7 +39,6 @@ namespace MySambu.Api.Models.Master
         public string HSNumber { get; set; }
         public string ItemIDOld { get; set; }
         public string ind { get; set; }
-        public string KSPItemID { get; set; }
         public string ItemOldID { get; set; }
         public bool ImportAllowed { get; set; }
         public short BCCategoryID { get; set; }
