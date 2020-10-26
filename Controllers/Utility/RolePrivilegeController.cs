@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MySambu.Api.Models;
 using MySambu.Api.Models.Master;
+using MySambu.Api.Models.Utility;
 using MySambu.Api.Repositorys.Interfaces;
 
 namespace MySambu.Api.Controllers.Utility
@@ -29,7 +30,7 @@ namespace MySambu.Api.Controllers.Utility
         
         [Authorize(Policy="RequireAdmin")]        
         [HttpPost("Save")]
-        public async Task<IActionResult> Save(TransType dt){
+        public async Task<IActionResult> Save(RolePrevilege dt){
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
@@ -38,7 +39,7 @@ namespace MySambu.Api.Controllers.Utility
                 // await _uow.CountryRepository.Save(count);
                 
                 dt.CreatedDate = DateTime.Now;
-                await _uow.TransTypeRepository.Save(dt);
+                await _uow.RolePrevilegeRepository.Save(dt);
                
                 _uow.Commit();
 

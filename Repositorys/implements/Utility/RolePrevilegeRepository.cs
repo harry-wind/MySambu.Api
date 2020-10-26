@@ -26,12 +26,12 @@ namespace MySambu.Api.Repositorys.implements
         public async Task Delete(string id, string by)
         {
             await Connection.QueryAsync("Update tUtl_RolePrivilege SET IsActive = False, UpdatedBy = @users, UpdatedDate = @tgl Where UserId = @userid",
-                    new {  users = by, tgl = DateTime.Now,  userid = by}, transaction: Transaction);
+                    new { users = by, tgl = DateTime.Now, userid = by }, transaction: Transaction);
         }
 
         public async Task<IEnumerable<RolePrevilege>> GetAll()
         {
-            return await Connection.GetAllAsync<RolePrevilege>(transaction:Transaction);
+            return await Connection.GetAllAsync<RolePrevilege>(transaction: Transaction);
         }
 
         public async Task<RolePrevilege> GetByID(string id)
@@ -46,9 +46,9 @@ namespace MySambu.Api.Repositorys.implements
             {
                 rp.MenuId = m.MenuId; rp.Menu = m;
                 return rp;
-            }, new {roleId = id}, splitOn: "MenuId");
+            }, new { roleId = id }, splitOn: "MenuId");
 
-            return await Connection.QueryFirstOrDefaultAsync("SELECT * FROM tUtl_RolePrivilege WHERE RoleId = @id", new {id = id}, transaction:Transaction);
+            return await Connection.QueryFirstOrDefaultAsync("SELECT * FROM tUtl_RolePrivilege WHERE RoleId = @id", new { id = id }, transaction: Transaction);
         }
 
         public async Task<IEnumerable<RolePrevilege>> GetByID2(string id)
@@ -62,7 +62,7 @@ namespace MySambu.Api.Repositorys.implements
             {
                 rp.MenuId = m.MenuId; rp.Menu = m;
                 return rp;
-            }, new {roleId = id}, transaction:Transaction, splitOn: "MenuId");
+            }, new { roleId = id }, transaction: Transaction, splitOn: "MenuId");
 
             return oList;
             // return await Connection.QueryFirstOrDefaultAsync("SELECT * FROM tUtl_RolePrivilege WHERE RoleId = @id", new {id = id}, transaction:Transaction);
@@ -70,25 +70,34 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task<IEnumerable<RolePrevilege>> GetByID3(string id, string menuid)
         {
-             var sql = "SELECT A.RoleId, A.GrandId, A.IsGrand, B.MenuId, B.MenuName" +
-                                              " FROM tUtl_RolePrivilege A" +
-                                              " INNER JOIN tUtl_AppMenu B ON A.MenuId=B.MenuId" +
-                                              " WHERE A.RoleId = @roleId and A.MenuId = @menu";
+            var sql = "SELECT A.RoleId, A.GrandId, A.IsGrand, B.MenuId, B.MenuName" +
+                                             " FROM tUtl_RolePrivilege A" +
+                                             " INNER JOIN tUtl_AppMenu B ON A.MenuId=B.MenuId" +
+                                             " WHERE A.RoleId = @roleId and A.MenuId = @menu";
 
             IEnumerable<RolePrevilege> oList = await Connection.QueryAsync<RolePrevilege, Menu, RolePrevilege>(sql, (rp, m) =>
             {
                 rp.MenuId = m.MenuId; rp.Menu = m;
                 return rp;
-            }, new {roleId = id, menuid}, transaction:Transaction, splitOn: "MenuId");
+            }, new { roleId = id, menuid }, transaction: Transaction, splitOn: "MenuId");
 
             return oList;
         }
 
         public async Task<RolePrevilege> Save(RolePrevilege obj)
         {
-            var dt = new RolePrevilege();
-            await Connection.InsertAsync<RolePrevilege>(obj, transaction:Transaction);
-            return dt;
+            var data = await Connection.QueryFirstAsync<RolePrevilege>("pUtl_RolePrivilegeSave", new
+            {
+                RoleId = obj.RoleId,
+                MenuId = obj.MenuId,
+                GrandId = obj.GrandId,
+                IsGrand = obj.IsGrand,
+                UserId = obj.CreatedBy,
+                Computer = obj.Computer,
+                Flag = 0
+            }, commandType: CommandType.StoredProcedure, transaction: Transaction);
+
+            return data;
         }
 
         public Task Update(RolePrevilege obj)
