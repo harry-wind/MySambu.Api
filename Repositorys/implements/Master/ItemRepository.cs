@@ -115,7 +115,7 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task<IEnumerable<Item>> GetByName(string param)
         {
-            string sql = @"SELECT TOP 200 * FROM tMst_Item Where ItemName like '%' + @param + '%'";
+            string sql = @"SELECT TOP 200 * FROM tMst_Item Where IsActive = 1 And ItemName like '%' + @param + '%'";
             
             return await Connection.QueryAsync<Item>(sql, new {Param = param}, transaction:Transaction);
         }
