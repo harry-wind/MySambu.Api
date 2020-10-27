@@ -32,7 +32,7 @@ namespace MySambu.Api.Repositorys.implements
         public async Task<IEnumerable<Item>> GetAll()
         {
             // return await Connection.GetAllAsync<Item>(transaction:Transaction);
-            return await Connection.QueryAsync<Item>("SELECT * FROM tMst_Item where IsActive = 0", transaction:Transaction);
+            return await Connection.QueryAsync<Item>("SELECT * FROM tMst_Item where IsActive = 1", transaction:Transaction);
         }
 
         public async Task<IEnumerable<Item>> GetAllByPage(ItemPageDto itemPageDto)
@@ -62,7 +62,7 @@ namespace MySambu.Api.Repositorys.implements
         public async Task<Item> Save(Item oItem, int newItemID)
         {
             // throw new System.NotImplementedException();
-            var dt = await Connection.QueryFirstOrDefaultAsync<Item>("pMst_Item", new
+            var dt = await Connection.QueryFirstOrDefaultAsync<Item>("pMst_ItemSave", new
             {
                 ItemID = oItem.ItemID,
                 ItemIDSambu =oItem.ItemIDSambu,
@@ -74,14 +74,15 @@ namespace MySambu.Api.Repositorys.implements
                 OldItemId = oItem.OldItemID,
                 AlternateID = oItem.AlternateID,
                 ItemDesc = oItem.ItemDesc,
-                SubCategoryID = oItem.SubCategoryID,
-                MainProductCategory = oItem.MainProductCategoryID,
+                SubCategoryID = oItem.SubCategoryID,                
                 UOMID = oItem.UOMID,
                 DecimalInQnty = oItem.DecimalInQnty,
                 AVGMonthlyUsage = oItem.AVGMonthlyUsage,
                 LeadTime = oItem.LeadTime,
                 MinStock = oItem.MinStock,
                 MaxStock = oItem.MaxStock,
+                MainProductCategoryID = oItem.MainProductCategoryID,
+                DeptID = oItem.DeptID,
                 IsActive = oItem.IsActive,
                 StockItem = oItem.StockItem,
                 Important = oItem.Important,
@@ -91,8 +92,7 @@ namespace MySambu.Api.Repositorys.implements
                 KawasanBerikatInd = oItem.KawasanBerikatInd,
                 RoutineInd = oItem.RoutineInd,
                 CentralisasiInd = oItem.CentralisasiInd,
-                LimbahB3Ind = oItem.LimbahB3Ind,
-                DeptID = oItem.DeptID,
+                LimbahB3Ind = oItem.LimbahB3Ind,                
                 IsFixedAsset = oItem.isFixedAsset,
                 ImagePath = oItem.ImagePath,
                 UserID = oItem.CreatedBy,
