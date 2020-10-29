@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -120,5 +121,10 @@ namespace MySambu.Api.Repositorys.implements
             return await Connection.QueryAsync<Item>(sql, new {Param = param}, transaction:Transaction);
         }
 
+        public async Task CancelRequest(ItemCancelRequestDto obj)
+        {
+            await Connection.QueryAsync("Update tMst_ItemNew SET Cancel = 1, CancelRemark = @remark, UpdatedBy = @by, UpdatedDate = @tgl  WHERE NewItemID = @id ", 
+               new { remark = obj.CancelRemark, by = obj.UpdatedBy, tgl = DateTime.Now, id = obj.NewItemID}, transaction: Transaction);
+        }
     }
 }

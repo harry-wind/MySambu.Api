@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using MySambu.Api.DTO.Master;
 using MySambu.Api.Models;
 using MySambu.Api.Models.Master;
 using MySambu.Api.Repositorys.Interfaces;
@@ -115,6 +116,33 @@ namespace MySambu.Api.Controllers.Master
                 return Ok(new{Status = st});
             }
 
+        }
+
+        [AllowAnonymous]
+        [HttpPost("CancelRequest")]
+        public async Task<IActionResult> CancelRequest(ItemCancelRequestDto dt){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;            
+            try
+            {
+                dt.UpdatedBy = userby;
+                await _uow.ItemRepository.CancelRequest(dt);
+                _uow.Commit();
+
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<ItemCancelRequestDto>(dt);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Info("Successfully Cancel Request Item");
+               
+                var st = StTrans.SetSt(200, 0, "Success");
+                return Ok(new{Status = st, Results = dt});
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Error("Error : ", e);
+                return Ok(new{Status = st});
+            }
         }
     }
 }
