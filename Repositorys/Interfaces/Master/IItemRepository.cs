@@ -11,6 +11,7 @@ namespace MySambu.Api.Repositorys.Interfaces
         Task<IEnumerable<Item>> GetAllByPage(ItemPageDto itemPageDto);
         Task<IEnumerable<Item>> GetByName(string param);
         Task<int> GetPageCount(int rowOfPage);
+        Task CancelRequest(ItemCancelRequestDto obj);
     }
 
 }
