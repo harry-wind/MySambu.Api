@@ -44,13 +44,16 @@ namespace MySambu.Api.Controllers.Master
                 _uow.Commit();
                 _log.Info("Save Success");
 
-                return Ok(
-                    new {
-                        statusResult = "Success",
-                        messageResult = "Saving Organization Structure Success",
-                        structureId = organization.StructureId
-                    }
-                );
+                // return Ok(
+                //     new {
+                //         statusResult = "Success",
+                //         messageResult = "Saving Organization Structure Success",
+                //         structureId = organization.StructureId
+                //     }
+                // );
+
+                var st = StTrans.SetSt(200, 0, "Succes");
+                return Ok(new{Status = st, Results = organization});
             }
             catch (System.Exception ex)
             {

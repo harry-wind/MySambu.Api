@@ -16,6 +16,8 @@ namespace MySambu.Api.DTO.Transaksi.BudgetItem
         public decimal? TotalTarget { get; set; } = 0;
         public bool? IsComplete { get; set; } = false;
         public string Proposal { get; set; }
+        public int DeptID { get; set; }
+        public string StructureName { get; set; }
         public int? TotalItem
         {
             get

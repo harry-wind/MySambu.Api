@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Dapper.Contrib.Extensions;
+using MySambu.Api.DTO.Master;
 using MySambu.Api.Models.Master;
 using MySambu.Api.Repositorys.Interfaces;
 
@@ -35,12 +37,65 @@ namespace MySambu.Api.Repositorys.implements
 
         public async Task<ItemSpec> GetByID(string id)
         {
-            return await Connection.QueryFirstOrDefaultAsync<ItemSpec>("SELECT * FROM tMst_ItemSpec WHERE ItemSpecID = @id", new { id = id}, transaction:Transaction);
+            var sql = "SELECT A.*, B.ItemSpecDtlID, B.VariantValueID, C.VariantValueName, C.VariantTypeID, D.VariantTypeName FROM tMst_ItemSpec A " +
+                        " LEFT JOIN tMst_ItemSpecDtl B ON A.ItemSpecID = B.ItemSpecID " +
+                        " LEFT JOIN tMst_ItemVariantValue C ON B.VariantValueID = C.VariantValueID " +
+                        " LEFT JOIN tMst_ItemVariantType D ON C.VariantTypeID = D.VariantTypeID WHERE A.ItemSpecID = @id";
+
+            var bhdr = new Dictionary<string, ItemSpec>();
+            await Connection.QueryAsync<ItemSpec, ItemSpecDtl, ItemSpec>(sql, (hdr, dtl) => {
+                ItemSpec biHdr;
+
+                if(!bhdr.TryGetValue(hdr.ItemSpecID, out biHdr)){
+                    biHdr = hdr;
+                    biHdr.ItemSpecDtl = new List<ItemSpecDtl>();
+                    bhdr.Add(biHdr.ItemSpecID, biHdr);
+                }
+
+                biHdr.ItemSpecDtl.Add(dtl);
+
+                return biHdr;
+                
+            }, splitOn: "ItemSpecDtlID", param: new{id=id}, transaction:Transaction);
+
+            return bhdr.Values.First();
+            // return await Connection.QueryFirstOrDefaultAsync<ItemSpec>("SELECT * FROM tMst_ItemSpec WHERE ItemSpecID = @id", new { id = id}, transaction:Transaction);
         }
 
-        public async Task<IEnumerable<ItemSpec>> GetByItem(string itemid)
+        public async Task<IEnumerable<ItemSpec>> GetByItem(string id)
         {
-            return await Connection.QueryAsync<ItemSpec>("SELECT * FROM tMst_ItemSpec WHERE ItemID = @id", new { id = itemid}, transaction:Transaction);
+            var sql = "SELECT A.*, B.ItemSpecDtlID, B.VariantValueID, C.VariantValueName, C.VariantTypeID, D.VariantTypeName FROM tMst_ItemSpec A " +
+                        " LEFT JOIN tMst_ItemSpecDtl B ON A.ItemSpecID = B.ItemSpecID " +
+                        " LEFT JOIN tMst_ItemVariantValue C ON B.VariantValueID = C.VariantValueID " +
+                        " LEFT JOIN tMst_ItemVariantType D ON C.VariantTypeID = D.VariantTypeID WHERE A.ItemId = @id";
+
+            var bhdr = new Dictionary<string, ItemSpec>();
+
+            await Connection.QueryAsync<ItemSpec, ItemSpecDtl, ItemSpec>(sql, (hdr, dtl) => {
+                ItemSpec biHdr;
+
+                if(!bhdr.TryGetValue(hdr.ItemSpecID, out biHdr)){
+                    biHdr = hdr;
+                    biHdr.ItemSpecDtl = new List<ItemSpecDtl>();
+                    bhdr.Add(biHdr.ItemSpecID, biHdr);
+                }
+
+                biHdr.ItemSpecDtl.Add(dtl);
+
+                return biHdr;
+                
+            }, splitOn: "ItemSpecDtlID", param: new{id=id}, transaction:Transaction);
+
+            return bhdr.Values;
+            // return await Connection.QueryAsync<ItemSpec>("SELECT * FROM tMst_ItemSpec WHERE ItemID = @id", new { id = itemid}, transaction:Transaction);
+        }
+
+        public async Task<IEnumerable<ItemTypeVariantDto>> GetByName(string name)
+        {
+            var sql = "SELECT A.VariantTypeID, A.VariantTypeName, B.VariantValueID, B.VariantValueName FROM tMst_ItemVariantType A INNER JOIN tMst_ItemVariantValue B ON A.VariantTypeID = B.VariantTypeID " +
+                        " WHERE A.IsActive = 1 AND A.VariantTypeName like CONCAT('%', @name, '%') OR B.VariantValueName like CONCAT('%', @name, '%')";
+
+            return await Connection.QueryAsync<ItemTypeVariantDto>(sql, new { name = name}, transaction:Transaction);
         }
 
         public async Task<ItemSpec> Save(ItemSpec obj)
@@ -51,12 +106,32 @@ namespace MySambu.Api.Repositorys.implements
                 ItemSpecID = obj.ItemSpecID,
                 ItemID = obj.ItemID,
                 DetailSpesifikasi = obj.Deskripsi,
+                UOM = obj.UOM,
+                Qnty = obj.QntyConvert,
                 IsActive = obj.IsActive,
                 ComputerName = obj.Computer,
                 UserID = obj.CreatedBy,
                 Flag = 0 
             }, commandType: CommandType.StoredProcedure, transaction: Transaction);
 
+            var hdr = dt.ItemSpecID;
+
+            if(obj.ItemSpecDtl != null){
+                foreach(var r in obj.ItemSpecDtl){
+                    await Connection.QueryFirstOrDefaultAsync<ItemSpec>("pMst_ItemSpecDtlSave", new
+                    {
+                        ItemSpecDtlID = r.ItemSpecDtlID,
+                        ItemSpecID = hdr,
+                        VariantValueID = r.VariantValueID,
+                        ComputerName = obj.Computer,
+                        UserID = obj.CreatedBy,
+                        Flag = 0 
+                    }, commandType: CommandType.StoredProcedure, transaction: Transaction); 
+                }
+            }
+
+            var dtl = await Connection.QueryAsync<ItemSpecDtl>("SELECT * FROM vMst_ItemSpecDtl where ItemSpecID = @id", new{id = hdr}, transaction:Transaction);
+            dt.ItemSpecDtl = dtl.ToList();
             return dt;
         }
 
