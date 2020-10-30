@@ -8,13 +8,13 @@ namespace MySambu.Api.Models.Master
     public class ItemSpec : BaseModel
     {
         [ExplicitKey]
-        public long ItemSpecID { get; set; }
+        public string ItemSpecID { get; set; }
         public string ItemID { get; set; }
         public string UOM { get; set; }
         public decimal? QntyConvert { get; set; }
         public string Deskripsi { get; set; }
         [Write(false)]
-        public IEnumerable<ItemSpecDtl> ItemSpecDtl { get; set; }
+        public IList<ItemSpecDtl> ItemSpecDtl { get; set; }
 
     }
 }

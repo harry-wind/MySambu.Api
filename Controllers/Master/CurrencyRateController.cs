@@ -34,12 +34,14 @@ namespace MySambu.Api.Controllers.Master
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-               await _uow.CurrencyRepository.SaveRate(cur);
-               _uow.Commit();
-               _log.Info("Succes Save");
+                await _uow.CurrencyRepository.SaveRate(cur);
+                _uow.Commit();
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<IEnumerable<CurrencyRates>>(cur);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Info("Succes Save");
                
-               var st = StTrans.SetSt(200, 0, "Succes");
-               return Ok(new{Status = st, Result = cur});
+                var st = StTrans.SetSt(200, 0, "Succes");
+                return Ok(new{Status = st, Result = cur});
         
             }
             catch (System.Exception e)
@@ -47,6 +49,7 @@ namespace MySambu.Api.Controllers.Master
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
 
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<IEnumerable<CurrencyRates>>(cur);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
