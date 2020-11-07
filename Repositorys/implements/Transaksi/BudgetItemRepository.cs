@@ -19,7 +19,37 @@ namespace MySambu.Api.Repositorys.implements
             // _transaction = transaction;
         }
 
-        public async Task<IEnumerable<BudgetItemHdrDto>> GetAll(string Role)
+        public async Task ApprovalBudget(List<BudgetItemApprovHdrDto> dt)
+        {
+            foreach(var hdr in dt){
+                await Connection.QueryAsync("pTrn_BudgetItemApprov", new
+                {
+                    BudgetCatGuid = hdr.BudgetCatGuid,
+                    IsComplete = hdr.IsComplete,
+                    UserID = hdr.UserID,
+                    Computer = hdr.Computer                    
+                }, commandType: CommandType.StoredProcedure, transaction: Transaction);
+
+               if(hdr.IsComplete == true){
+                   foreach(var dtl in hdr.DtlApprov){
+                        await Connection.QueryAsync("pTrn_BudgetItemApprov", new
+                        {
+                            BudgetItemGuid = dtl.BudgetItemGuid,
+                            Stat = dtl.Stat,
+                            UserID = hdr.UserID,
+                            Remark = dtl.Remark,
+                            Computer = hdr.Computer,
+                            LevelApp = dtl.LevelApp
+                        }, commandType: CommandType.StoredProcedure, transaction: Transaction);
+                   }
+               }
+           }
+            // foreach(var data in dt){
+            //   
+            // }
+        }
+
+        public async Task<IEnumerable<BudgetItemHdrDto>> GetAll(string Role, int stat=0)
         {
             var bhdr = new Dictionary<string, BudgetItemHdrDto>();
 
@@ -28,7 +58,7 @@ namespace MySambu.Api.Repositorys.implements
             {
                 BudgetItemHdrDto biHdr;
 
-                if (!bhdr.TryGetValue(hdr.BudgetCatGuid, out biHdr))
+                if (!bhdr.TryGetValue(hdr.BudgetCatGuid.ToString(), out biHdr))
                 {
                     biHdr = hdr;
                     biHdr.BudgetItems = new List<BudgetDtlItem>();
@@ -38,7 +68,7 @@ namespace MySambu.Api.Repositorys.implements
                 biHdr.BudgetItems.Add(dtl);
 
                 return biHdr;
-            }, splitOn: "BudgetItemGuid", param: new{Role=Role}, commandType: CommandType.StoredProcedure, transaction: Transaction);
+            }, splitOn: "BudgetItemGuid", param: new{Role=Role, Stat=stat}, commandType: CommandType.StoredProcedure, transaction: Transaction);
 
             return bhdr.Values;
         }
@@ -48,9 +78,25 @@ namespace MySambu.Api.Repositorys.implements
             return await Connection.QueryAsync<BudgetCategoryTrn>("Select * FROM vw_TrnBudgetTarget where DeptID = @DeptID AND BudgetPeriod = @BudgetPeriod", inp, transaction:Transaction);
         }
 
-        public Task SaveBudget(List<BudgetDtlItem> item)
+        public async Task SaveBudget(List<BudgetDtlItem> item)
         {
-            throw new System.NotImplementedException();
+            foreach(var dt in item){
+                await Connection.QueryAsync("pTrn_BudgetTargetItemSave", new
+                {
+                    BudgetItemGuid = dt.BudgetItemGuid,
+                    BudgetCatGuid = dt.BudgetCatGuid,
+                    ItemSpecID = dt.ItemSpecID,
+                    QntyDept = dt.QntyDept,
+                    Qnty = dt.Qnty,
+                    CurrencyId = dt.CurrencyId,
+                    UnitPrice = dt.UnitPrice,
+                    ExchangeRateIDR = dt.ExchangeRateIDR,
+                    Remark = dt.Remark,
+                    UserID = dt.CreatedBy,
+                    Computer = dt.Computer,
+                    Flag = 0
+                }, commandType: CommandType.StoredProcedure, transaction: Transaction);
+            }
         }
     }
 }

@@ -15,6 +15,7 @@ namespace MySambu.Api.Models.Master
         public string Deskripsi { get; set; }
         [Write(false)]
         public IList<ItemSpecDtl> ItemSpecDtl { get; set; }
+        public ItemPriceSupplier ItemPrice { get; set; }
 
     }
 }

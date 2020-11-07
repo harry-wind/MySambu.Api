@@ -80,13 +80,13 @@ namespace MySambu.Api.Controllers.Transaksi
 
         [Authorize(Policy = "RequireAdmin")]
         [HttpPost("Update")]
-        public async Task<IActionResult> UpdatedCountry(BudgetTargetHdrDto dt)
+        public async Task<IActionResult> Update(BudgetTargetHdrDto dt)
         {
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-                dt.CreatedBy = userby;
-               
+                dt.BudgetPeriod = new DateTime(dt.BudgetPeriod.Year, dt.BudgetPeriod.Month, 1);
+                dt.CreatedBy = userby;               
 
                 await _uow.BudgetTargetRepository.Save(dt);
 

@@ -17,7 +17,7 @@ namespace MySambu.Api.Controllers.Master
     [ApiController]
     public class ItemNewController : ControllerBase
     {
-         private static readonly ILog _log = LogManager.GetLogger(typeof(ItemNewController));
+        private static readonly ILog _log = LogManager.GetLogger(typeof(ItemNewController));
         private readonly IUnitOfWorks _uow;
         private readonly IConfiguration _config;
         private IHttpContextAccessor _httpContext;

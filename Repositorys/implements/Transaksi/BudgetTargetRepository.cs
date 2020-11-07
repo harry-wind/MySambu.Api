@@ -136,7 +136,7 @@ namespace MySambu.Api.Repositorys.implements
             await Connection.QueryAsync("pTrn_BudgetTargetHdrSave", new
             {
                 BudgetHdrGuid = obj.BudgetHdrGuid,
-                BudgetPeriod = obj,
+                BudgetPeriod = obj.BudgetPeriod,
                 Total = obj.Total,
                 UserID = obj.CreatedBy,
                 Computer = obj.Computer,

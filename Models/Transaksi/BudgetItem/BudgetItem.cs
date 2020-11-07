@@ -3,12 +3,12 @@ using MySambu.Api.Models.Master;
 
 namespace MySambu.Api.Models.Transaksi.BudgetItem
 {
-    public class BudgetDtlItem
+    public class BudgetDtlItem : BaseModelTransaksi
     {
         public string BudgetItemGuid { get; set; }
         public string BudgetCatGuid { get; set; }
         public long ItemSpecID { get; set; }
-        public byte Status { get; set; }
+        public string Status { get; set; }
         public decimal QntyDept { get; set; }
         public decimal Qnty { get; set; }
         public string CurrencyId { get; set; }
