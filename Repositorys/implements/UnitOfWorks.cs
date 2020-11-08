@@ -5,8 +5,10 @@ using System.Data.SqlClient;
 using log4net;
 using Microsoft.Extensions.Configuration;
 using MySambu.Api.Repositorys.implements.Master;
+using MySambu.Api.Repositorys.implements.Transaksi;
 using MySambu.Api.Repositorys.Interfaces;
 using MySambu.Api.Repositorys.Interfaces.Master;
+using MySambu.Api.Repositorys.Interfaces.Transaksi;
 
 namespace MySambu.Api.Repositorys.implements
 {
@@ -44,6 +46,7 @@ namespace MySambu.Api.Repositorys.implements
         private ITransAccessRepository _transAccessRepository;
         private IStructureTransAccessRepository _structureTransAccessRepository;
         private IMainProductCategoryRepository _mainProductCategoryRepository;
+        private PPHRepository _pphRepository;
 
         public IAuthRepository AuthRepository {
             get { return _authRepository ?? (_authRepository = new AuthRepository(_transaction)); }
@@ -158,6 +161,10 @@ namespace MySambu.Api.Repositorys.implements
             get { return _mainProductCategoryRepository ?? (_mainProductCategoryRepository = new MainProductCategoryRepository(_transaction)); }
         }
 
+        public IPPHRepository PPHRepository {
+            get { return _pphRepository ?? (_pphRepository = new PPHRepository(_transaction)); }
+        }
+
         private void resetRepository()
         {
             resetMasterRepository();   
@@ -168,6 +175,7 @@ namespace MySambu.Api.Repositorys.implements
         {
             _budgetTargetRepository = null;
             _budgetItemRepository = null;
+            _pphRepository = null;
         }
 
         private void resetMasterRepository()
@@ -196,7 +204,7 @@ namespace MySambu.Api.Repositorys.implements
             _itemVariantValueRepository = null;
             _transAccessRepository = null;
             _structureTransAccessRepository = null;
-            _mainProductCategoryRepository = null;
+            _mainProductCategoryRepository = null;            
         }
 
         public UnitOfWorks(IConfiguration configuration)

@@ -1,4 +1,5 @@
 using MySambu.Api.Repositorys.Interfaces.Master;
+using MySambu.Api.Repositorys.Interfaces.Transaksi;
 
 namespace MySambu.Api.Repositorys.Interfaces
 {
@@ -32,6 +33,7 @@ namespace MySambu.Api.Repositorys.Interfaces
         IBudgetTargetRepository BudgetTargetRepository { get; }
         IBudgetItemRepository BudgetItemRepository { get; }
         IMainProductCategoryRepository MainProductCategoryRepository { get; }
+        IPPHRepository PPHRepository { get; }
 
         void Commit();
         void Rollback();
