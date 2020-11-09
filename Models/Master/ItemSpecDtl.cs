@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Dapper.Contrib.Extensions;
 using MySambu.Api.DTO.Master;
 

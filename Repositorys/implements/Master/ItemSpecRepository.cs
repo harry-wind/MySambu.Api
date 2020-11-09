@@ -40,11 +40,13 @@ namespace MySambu.Api.Repositorys.implements
             var sql = "SELECT A.*, B.ItemSpecDtlID, B.VariantValueID, C.VariantValueName, C.VariantTypeID, D.VariantTypeName FROM tMst_ItemSpec A " +
                         " LEFT JOIN tMst_ItemSpecDtl B ON A.ItemSpecID = B.ItemSpecID " +
                         " LEFT JOIN tMst_ItemVariantValue C ON B.VariantValueID = C.VariantValueID " +
-                        " LEFT JOIN tMst_ItemVariantType D ON C.VariantTypeID = D.VariantTypeID WHERE A.ItemSpecID = @id";
+                        " LEFT JOIN tMst_ItemVariantType D ON C.VariantTypeID = D.VariantTypeID " + 
+                        " WHERE A.ItemSpecID = @id";
 
             var bhdr = new Dictionary<string, ItemSpec>();
             await Connection.QueryAsync<ItemSpec, ItemSpecDtl, ItemSpec>(sql, (hdr, dtl) => {
                 ItemSpec biHdr;
+                
 
                 if(!bhdr.TryGetValue(hdr.ItemSpecID, out biHdr)){
                     biHdr = hdr;
@@ -67,7 +69,8 @@ namespace MySambu.Api.Repositorys.implements
             var sql = "SELECT A.*, B.ItemSpecDtlID, B.VariantValueID, C.VariantValueName, C.VariantTypeID, D.VariantTypeName FROM tMst_ItemSpec A " +
                         " LEFT JOIN tMst_ItemSpecDtl B ON A.ItemSpecID = B.ItemSpecID " +
                         " LEFT JOIN tMst_ItemVariantValue C ON B.VariantValueID = C.VariantValueID " +
-                        " LEFT JOIN tMst_ItemVariantType D ON C.VariantTypeID = D.VariantTypeID WHERE A.ItemId = @id";
+                        " LEFT JOIN tMst_ItemVariantType D ON C.VariantTypeID = D.VariantTypeID " + 
+                        " WHERE A.ItemId = @id";
 
             var bhdr = new Dictionary<string, ItemSpec>();
 
@@ -86,6 +89,14 @@ namespace MySambu.Api.Repositorys.implements
                 
             }, splitOn: "ItemSpecDtlID", param: new{id=id}, transaction:Transaction);
 
+            var sql2 = "SElECT * FROM tSum_ItemPriceBySupplier WHERE ItemID = @id";
+            var dt = await Connection.QueryAsync<ItemPriceSupplier>(sql2, new{id=id}, transaction:Transaction);
+
+            foreach(var dts in bhdr.Values){
+                var data = dt.Where(x => x.ItemSpecID.Contains(dts.ItemSpecID)).OrderByDescending(x => x.LastUsingPriceDate).FirstOrDefault();
+                dts.ItemPrice = data;
+            }
+            
             return bhdr.Values;
             // return await Connection.QueryAsync<ItemSpec>("SELECT * FROM tMst_ItemSpec WHERE ItemID = @id", new { id = itemid}, transaction:Transaction);
         }

@@ -38,6 +38,7 @@ namespace MySambu.Api.DTO.Transaksi.BudgetItem
             }
 
         }
+        public Int16 StatApp { get; set; }
         public List<BudgetDtlItem> BudgetItems { get; set; }
 
     }
