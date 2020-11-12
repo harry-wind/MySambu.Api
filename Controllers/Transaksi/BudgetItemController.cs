@@ -33,6 +33,33 @@ namespace MySambu.Api.Controllers.Transaksi
             _config = config;
             _httpContext = (IHttpContextAccessor)new HttpContextAccessor();
         }
+
+        [Authorize(Policy="RequireAdmin")]
+        [HttpGet("GetAll/{param}")]
+        public async Task<IActionResult> GetAll(int param){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            string Role = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Role).Value;
+            
+            try
+            {
+                var dt = await _uow.BudgetItemRepository.GetAll(Role, param);
+                _uow.Commit();
+                dt = dt.OrderByDescending(f => f.BudgetPeriod);
+
+                var st = StTrans.SetSt(200, 0, "Succes");
+                return Ok(new{Status = st, Results = dt});
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Error("Error : ", e);
+                return Ok(new{Status = st});
+            }
+
+        }
+
         
         [Authorize(Policy="RequireAdmin")]        
         [HttpPost("Save")]
@@ -109,32 +136,7 @@ namespace MySambu.Api.Controllers.Transaksi
             }
         }
 
-        [Authorize(Policy="RequireAdmin")]
-        [HttpGet("GetAll/{param}")]
-        public async Task<IActionResult> GetAll(int param){
-            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
-            string Role = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Role).Value;
-            
-            try
-            {
-                var dt = await _uow.BudgetItemRepository.GetAll(Role, param);
-                _uow.Commit();
-                dt = dt.OrderByDescending(f => f.BudgetPeriod);
-               
-                var st = StTrans.SetSt(200, 0, "Succes");
-                return Ok(new{Status = st, Results = dt});
-            }
-            catch (System.Exception e)
-            {
-                var st = StTrans.SetSt(400, 0, e.Message);
-                _uow.Rollback();
-                log4net.LogicalThreadContext.Properties["User"] = userby;
-                _log.Error("Error : ", e);
-                return Ok(new{Status = st});
-            }
-
-        }
-
+      
         [Authorize(Policy="RequireAdmin")]
         [HttpPost("Approval")]
         public async Task<IActionResult> Approval(List<BudgetItemApprovHdrDto> param){

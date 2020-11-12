@@ -46,7 +46,7 @@ namespace MySambu.Api.Repositorys.implements
         private ITransAccessRepository _transAccessRepository;
         private IStructureTransAccessRepository _structureTransAccessRepository;
         private IMainProductCategoryRepository _mainProductCategoryRepository;
-        private IPpbRequestRepository _ppbRepository;
+        private IPpbRequestRepository _ppbRequestRepository;
         private PPHRepository _pphRepository;
 
         public IAuthRepository AuthRepository {
@@ -162,8 +162,8 @@ namespace MySambu.Api.Repositorys.implements
             get { return _mainProductCategoryRepository ?? (_mainProductCategoryRepository = new MainProductCategoryRepository(_transaction)); }
         }
 
-        public IPpbRequestRepository PPBRepository {
-            get { return _ppbRepository ?? (_ppbRepository = new PPBRequestRepository(_transaction)); }
+        public IPpbRequestRepository PPBRequestRepository {
+            get { return _ppbRequestRepository ?? (_ppbRequestRepository = new PPBRequestRepository(_transaction)); }
         }
         
         public IPPHRepository PPHRepository {
@@ -180,7 +180,7 @@ namespace MySambu.Api.Repositorys.implements
         {
             _budgetTargetRepository = null;
             _budgetItemRepository = null;
-            _ppbRepository = null;
+            _ppbRequestRepository = null;
             _pphRepository = null;
         }
 

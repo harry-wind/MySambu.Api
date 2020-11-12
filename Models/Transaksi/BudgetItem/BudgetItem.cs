@@ -7,7 +7,14 @@ namespace MySambu.Api.Models.Transaksi.BudgetItem
     {
         public string BudgetItemGuid { get; set; }
         public string BudgetCatGuid { get; set; }
-        public long ItemSpecID { get; set; }
+        public string ItemID { get; set; }
+        public string ItemName { get; set; }
+        public string ItemSpecID { get; set; }
+        public string ItemSpec { get; set; }
+        public string UOMPurchaseName { get; set; }
+        public decimal QntyConvert { get; set; }
+        public string UOMUsageName { get; set; }
+        public string Deskripsi { get; set; }
         public string Status { get; set; }
         public decimal QntyDept { get; set; }
         public decimal Qnty { get; set; }

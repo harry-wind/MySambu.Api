@@ -13,11 +13,13 @@ namespace MySambu.Api.DTO.Transaksi.BudgetItem
         public DateTime BudgetPeriod { get; set; }
         public int BudgetCategoryID { get; set; }
         public string BudgetCategoryName { get; set; }
+        public string BudgetCategoryAbbr { get; set; }
         public decimal? TotalTarget { get; set; } = 0;
         public bool? IsComplete { get; set; } = false;
         public string Proposal { get; set; }
         public int DeptID { get; set; }
         public string StructureName { get; set; }
+        public string StructureAbbr { get; set; }
         public int? TotalItem
         {
             get
