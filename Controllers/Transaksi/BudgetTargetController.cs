@@ -33,87 +33,6 @@ namespace MySambu.Api.Controllers.Transaksi
         }
 
         [Authorize(Policy = "RequireAdmin")]
-        [HttpPost("Save")]
-        public async Task<IActionResult> Save(BudgetTargetHdrDto dt)
-        {
-            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
-            try
-            {
-                dt.BudgetHdrGuid = _uow.GetGUID();
-                dt.BudgetPeriod = new DateTime(dt.BudgetPeriod.Year, dt.BudgetPeriod.Month, 1);
-                dt.CreatedBy = userby;
-                long deptguid = 0; string guid = "";
-                dt.BudgetTargetItem = dt.BudgetTargetItem.OrderBy(r => r.DeptId).ToList();
-                foreach (var data in dt.BudgetTargetItem)
-                {
-                    if (deptguid != data.DeptId)
-                    {
-                        guid =  _uow.GetGUID();
-                        deptguid = data.DeptId;
-                    }
-                    
-                    data.BudgetDeptGuid = guid;
-                    data.BudgetCatGuid = _uow.GetGUID();
-                }
-                var dts = await _uow.BudgetTargetRepository.Save(dt);
-                _uow.Commit();
-
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetTargetHdrDto>(dts);
-                log4net.LogicalThreadContext.Properties["User"] = userby;
-                _log.Info("Succes Save");
-
-                var st = StTrans.SetSt(200, 0, "Succes");
-                return Ok(new { Status = st, Results = dts });
-
-            }
-            catch (System.Exception e)
-            {
-                var st = StTrans.SetSt(400, 0, e.Message);
-                _uow.Rollback();
-
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetTargetHdrDto>(dt);
-                log4net.LogicalThreadContext.Properties["User"] = userby;
-                _log.Error("Error : ", e);
-                return Ok(new { Status = st });
-            }
-        }
-
-        [Authorize(Policy = "RequireAdmin")]
-        [HttpPost("Update")]
-        public async Task<IActionResult> Update(BudgetTargetHdrDto dt)
-        {
-            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
-            try
-            {
-                dt.BudgetPeriod = new DateTime(dt.BudgetPeriod.Year, dt.BudgetPeriod.Month, 1);
-                dt.CreatedBy = userby;               
-
-                await _uow.BudgetTargetRepository.Save(dt);
-
-                _uow.Commit();
-
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetTargetHdrDto>(dt);
-                log4net.LogicalThreadContext.Properties["User"] = userby;
-                _log.Info("Succes Save");
-
-
-                var st = StTrans.SetSt(200, 0, "Succes");
-                return Ok(new { Status = st, Results = dt });
-
-            }
-            catch (System.Exception e)
-            {
-                var st = StTrans.SetSt(400, 0, e.Message);
-                _uow.Rollback();
-
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetTargetHdrDto>(dt);
-                log4net.LogicalThreadContext.Properties["User"] = userby;
-                _log.Error("Error : ", e);
-                return Ok(new { Status = st });
-            }
-        }
-
-        [Authorize(Policy = "RequireAdmin")]
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
@@ -160,5 +79,88 @@ namespace MySambu.Api.Controllers.Transaksi
             }
 
         }
+
+        [Authorize(Policy = "RequireAdmin")]
+        [HttpPost("Save")]
+        public async Task<IActionResult> Save(BudgetTargetHdrDto dt)
+        {
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            try
+            {
+                dt.BudgetHdrGuid = _uow.GetGUID();
+                dt.BudgetPeriod = new DateTime(dt.BudgetPeriod.Year, dt.BudgetPeriod.Month, 1);
+                dt.CreatedBy = userby;
+                long deptguid = 0; string guid = "";
+                dt.BudgetTargetItem = dt.BudgetTargetItem.OrderBy(r => r.DeptId).ToList();
+                foreach (var data in dt.BudgetTargetItem)
+                {
+                    if (deptguid != data.DeptId)
+                    {
+                        guid = _uow.GetGUID();
+                        deptguid = data.DeptId;
+                    }
+
+                    data.BudgetDeptGuid = guid;
+                    data.BudgetCatGuid = _uow.GetGUID();
+                }
+                var dts = await _uow.BudgetTargetRepository.Save(dt);
+                _uow.Commit();
+
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetTargetHdrDto>(dts);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Info("Succes Save");
+
+                var st = StTrans.SetSt(200, 0, "Succes");
+                return Ok(new { Status = st, Results = dts });
+
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetTargetHdrDto>(dt);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Error("Error : ", e);
+                return Ok(new { Status = st });
+            }
+        }
+
+        [Authorize(Policy = "RequireAdmin")]
+        [HttpPost("Update")]
+        public async Task<IActionResult> Update(BudgetTargetHdrDto dt)
+        {
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            try
+            {
+                dt.BudgetPeriod = new DateTime(dt.BudgetPeriod.Year, dt.BudgetPeriod.Month, 1);
+                dt.CreatedBy = userby;
+
+                await _uow.BudgetTargetRepository.Save(dt);
+
+                _uow.Commit();
+
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetTargetHdrDto>(dt);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Info("Succes Save");
+
+
+                var st = StTrans.SetSt(200, 0, "Succes");
+                return Ok(new { Status = st, Results = dt });
+
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetTargetHdrDto>(dt);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Error("Error : ", e);
+                return Ok(new { Status = st });
+            }
+        }
+
+
     }
 }
