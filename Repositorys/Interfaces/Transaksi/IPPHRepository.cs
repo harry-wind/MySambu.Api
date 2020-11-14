@@ -14,5 +14,6 @@ namespace MySambu.Api.Repositorys.Interfaces.Transaksi
         Task<PPHDto> SaveAll(PPHDto obj);
         Task<PPHDto> UpdateAll(PPHDto obj);
         Task<PPHDto> GetByGuid(string hdrGuid);
+        Task<IEnumerable<PPHFindItemDto>> FindItem(PPHFindItemParam obj);
     }
 }

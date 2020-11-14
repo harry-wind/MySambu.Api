@@ -14,6 +14,8 @@ namespace MySambu.Api.DTO.Transaksi.PPH
         public bool PriceInd { get; set; }
         public string Remark { get; set; }
         public long PPHDtlID { get; set; }
+        public string ItemSpecID { get; set; }
+        public string ItemSpecDesc { get; set; }
         public string ItemID { get; set; }
         public string ItemName { get; set; }
         public short UOMID { get; set; }
