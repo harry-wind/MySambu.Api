@@ -5,6 +5,7 @@ namespace MySambu.Api.DTO.Transaksi.PPB
 {
     public class PPBRequestDto : PPBHdr
     {
-        public List<PPBRequets> PPBRequestDtl { get; set; }
+        public List<PPBRequets> PPBItemRequest { get; set; }
+        
     }
 }

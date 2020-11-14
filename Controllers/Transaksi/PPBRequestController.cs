@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -59,6 +60,7 @@ namespace MySambu.Api.Controllers.Transaksi
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             string Role = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Role).Value;
             
+            data.Role = Role;
             try
             {
                 var dt = await _uow.PPBRequestRepository.GetPPBRequest(data);
@@ -85,9 +87,12 @@ namespace MySambu.Api.Controllers.Transaksi
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
-                dt.PPBGUID = _uow.GetGUID();
+                if(dt.PPBGUID == null)
+                    dt.PPBGUID = _uow.GetGUID();
+
                 dt.CreatedBy = userby;
-                foreach(var dtx in dt.PPBRequestDtl){
+
+                foreach(var dtx in dt.PPBItemRequest){
                     if(dtx.PPBDtlRequestGUID == null)
                         dtx.PPBDtlRequestGUID = _uow.GetGUID();
                     // if(dtx.BudgetItemGuid == null)
@@ -118,7 +123,59 @@ namespace MySambu.Api.Controllers.Transaksi
         }
 
 
+        [Authorize(Policy="RequireAdmin")]
+        [HttpPost("ApproveByDept")]
+        public async Task<IActionResult> ApproveByDept(List<PPBRequestApproveByDeptDto> data){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            string Role = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Role).Value;
+            
+            
+            try
+            {
+                await _uow.PPBRequestRepository.PPBRequestApproveByDept(data, userby);
+                _uow.Commit();
+                // dt = dt.OrderByDescending(f => f.);
+               
+                var st = StTrans.SetSt(200, 0, "Succes");
+                return Ok(new{Status = st, Results = data});
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Error("Error : ", e);
+                return Ok(new{Status = st});
+            }
 
+        }
+
+        [Authorize(Policy="RequireAdmin")]
+        [HttpPost("SetByPurchaser")]
+        public async Task<IActionResult> SetByPurchaser(List<PPBSetPurchaserDto> data){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            string Role = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Role).Value;
+            
+            
+            try
+            {
+                await _uow.PPBRequestRepository.PPBSetPurchase(data, userby);
+                _uow.Commit();
+                // dt = dt.OrderByDescending(f => f.);
+               
+                var st = StTrans.SetSt(200, 0, "Succes");
+                return Ok(new{Status = st, Results = data});
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Error("Error : ", e);
+                return Ok(new{Status = st});
+            }
+
+        }
         
     }
 }

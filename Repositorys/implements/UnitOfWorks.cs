@@ -48,6 +48,7 @@ namespace MySambu.Api.Repositorys.implements
         private IMainProductCategoryRepository _mainProductCategoryRepository;
         private IPpbRequestRepository _ppbRequestRepository;
         private PPHRepository _pphRepository;
+        private IPbbBuyRepository _ppBuyRepository;
 
         public IAuthRepository AuthRepository {
             get { return _authRepository ?? (_authRepository = new AuthRepository(_transaction)); }
@@ -170,6 +171,10 @@ namespace MySambu.Api.Repositorys.implements
             get { return _pphRepository ?? (_pphRepository = new PPHRepository(_transaction)); }
         }
 
+        public IPbbBuyRepository PPBBuyRepository {
+            get { return _ppBuyRepository ?? (_ppBuyRepository = new PPBBuyRepository(_transaction)); }
+        }
+
         private void resetRepository()
         {
             resetMasterRepository();   
@@ -182,6 +187,7 @@ namespace MySambu.Api.Repositorys.implements
             _budgetItemRepository = null;
             _ppbRequestRepository = null;
             _pphRepository = null;
+            _ppBuyRepository = null;
         }
 
         private void resetMasterRepository()

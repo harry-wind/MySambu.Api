@@ -22,7 +22,7 @@ namespace MySambu.Api.Repositorys.implements
         public async Task ApprovalBudget(List<BudgetItemApprovHdrDto> dt)
         {
             foreach(var hdr in dt){
-                await Connection.QueryAsync("pTrn_BudgetItemApprov", new
+                await Connection.QueryAsync("pTrn_BudgetItemApprovHdr", new
                 {
                     BudgetCatGuid = hdr.BudgetCatGuid,
                     IsComplete = hdr.IsComplete,
@@ -88,7 +88,7 @@ namespace MySambu.Api.Repositorys.implements
                     ItemSpecID = dt.ItemSpecID,
                     QntyDept = dt.QntyDept,
                     Qnty = dt.Qnty,
-                    CurrencyId = dt.CurrencyId,
+                    CurrencyId = dt.CurrencyID,
                     UnitPrice = dt.UnitPrice,
                     ExchangeRateIDR = dt.ExchangeRateIDR,
                     Remark = dt.Remark,
