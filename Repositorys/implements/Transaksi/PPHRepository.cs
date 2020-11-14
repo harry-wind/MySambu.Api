@@ -28,6 +28,25 @@ namespace MySambu.Api.Repositorys.implements.Transaksi
             throw new System.NotImplementedException();
         }
 
+        public async Task<IEnumerable<PPHFindItemDto>> FindItem(PPHFindItemParam obj)
+        {
+            string sql = "Select * From dbo.[fTrn_PPHFindItem]() Where 1=1 ";
+            if (obj.ItemName != string.Empty)
+            {
+                sql += " And (ItemName like '%" + obj.ItemName + "%' Or Deskripsi like '%" + obj.ItemName + "%') ";
+            }
+            if (obj.Category != null)
+            {
+                sql += " And CategoryID = " + obj.Category;
+            }
+            if (obj.SubCategoryID != null)
+            {
+                sql += " And SubCategoryID = " + obj.SubCategoryID;
+            }
+
+            return await Connection.QueryAsync<PPHFindItemDto>(sql, transaction: Transaction);
+        }
+
         public Task<IEnumerable<PPH>> GetAll()
         {
             throw new System.NotImplementedException();
@@ -61,7 +80,7 @@ namespace MySambu.Api.Repositorys.implements.Transaksi
         public async Task<IEnumerable<PPHDto>> GetAlls()
         {
             string sql = @"Select TOP 1000 a.PPHHdrGuid, a.PPHID, a.PPHNo, a.SupplierPPHRef, a.TransDate, a.SupplierID, a.PriceInd, a.Remark
-                    , b.PPHHdrGuid, b.PPHDtlID, b.PPHID, b.ItemID, b.ItemName, b.Qnty, b. CurrencyID, b.UnitPrice, b.ExchangerateIDR, b.WeekNo
+                    , b.PPHHdrGuid, b.PPHDtlID, b.PPHID, b.ItemSpecID, b.ItemSpecDesc, b.ItemID, b.ItemName, b.Qnty, b. CurrencyID, b.UnitPrice, b.ExchangerateIDR, b.WeekNo
                     , b.DeliveryDate, b.DetailRemark, b.ShowSpecInd, b.PPBID, b.ItemIDOld, b.ValidUntil, b.RevisionNo, b.CreatedBy, b.CreatedDate
                     , b.UpdatedBy, b.UpdatedDate, b.Computer, b.ComputerDate
                     From tTrn_PPHHdr as a 
@@ -90,7 +109,7 @@ namespace MySambu.Api.Repositorys.implements.Transaksi
         public async Task<PPHDto> GetByGuid(string hdrGuid)
         {
             string sql = @"Select TOP 1000 a.PPHHdrGuid, a.PPHID, a.PPHNo, a.SupplierPPHRef, a.TransDate, a.SupplierID, a.PriceInd, a.Remark
-                    , b.PPHHdrGuid, b.PPHDtlID, b.PPHID, b.ItemID, b.ItemName, b.Qnty, b. CurrencyID, b.UnitPrice, b.ExchangerateIDR, b.WeekNo
+                    , b.PPHHdrGuid, b.PPHDtlID, b.PPHID, b.ItemSpecID, b.ItemSpecDesc, b.ItemID, b.ItemName, b.Qnty, b. CurrencyID, b.UnitPrice, b.ExchangerateIDR, b.WeekNo
                     , b.DeliveryDate, b.DetailRemark, b.ShowSpecInd, b.PPBID, b.ItemIDOld, b.ValidUntil, b.RevisionNo, b.CreatedBy, b.CreatedDate
                     , b.UpdatedBy, b.UpdatedDate, b.Computer, b.ComputerDate
                     From tTrn_PPHHdr as a 
@@ -156,6 +175,8 @@ namespace MySambu.Api.Repositorys.implements.Transaksi
                     PPHDtlID = dtl.PPHDtlID,
                     PPHID = pphDtos.PPHID,
                     PPHHdrGuid = pphDtos.PPHHdrGuid,
+                    ItemSpecID = dtl.ItemSpecID,
+                    ItemSpecDesc = dtl.ItemSpecDesc,
                     ItemID = dtl.ItemID,
                     ItemName = dtl.ItemName,
                     RevisionNo = dtl.RevisionNo,
