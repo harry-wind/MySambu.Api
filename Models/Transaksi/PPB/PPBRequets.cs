@@ -7,8 +7,19 @@ namespace MySambu.Api.Models.Transaksi.PPB
         
         public string PPBDtlRequestGUID { get; set; }
         public string PPBGUID { get; set; }
+        public string BudgetItemGuid { get;  set; }
         public string ItemID { get; set; }
+        public string ItemName { get; set; }
         public string ItemSpecID { get; set; }
+        public long CategoryID { get; set; }
+        public string CategoryName { get; set; }
+        public long  SubCategoryID { get; set; }
+        public string SubCategoryName { get; set; }
+        public string ItemSpec { get; set; }
+        public string UOMPurchaseName { get; set; }
+        public decimal QntyConvert { get; set; }
+        public string UOMUsageName { get; set; }
+        public string Deskripsi { get; set; }
         public byte Status { get; set; }
         public decimal QntyReq { get; set; }
         public string CurrencyID { get; set; }

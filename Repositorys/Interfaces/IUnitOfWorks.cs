@@ -34,7 +34,7 @@ namespace MySambu.Api.Repositorys.Interfaces
         IBudgetItemRepository BudgetItemRepository { get; }
         IMainProductCategoryRepository MainProductCategoryRepository { get; }
         IPpbRequestRepository PPBRequestRepository {get;}
-        
+        IPbbBuyRepository PPBBuyRepository { get; }
         IPPHRepository PPHRepository { get; }
 
         void Commit();

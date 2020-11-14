@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
@@ -62,16 +63,39 @@ namespace MySambu.Api.Repositorys.implements
                     if (!bhdr.TryGetValue(hdr.PPBGUID.ToString(), out biHdr))
                     {
                         biHdr = hdr;
-                        biHdr.PPBRequestDtl = new List<PPBRequets>();
+                        biHdr.PPBItemRequest = new List<PPBRequets>();
                         bhdr.Add(biHdr.PPBGUID, biHdr);
                     }
 
-                    biHdr.PPBRequestDtl.Add(dtl);
+                    biHdr.PPBItemRequest.Add(dtl);
 
                     return biHdr;
-                }, splitOn: "PPBDtlRequestGUID", param: new{Stat=dt.Stat, sqlstatement=sql}, commandType: CommandType.StoredProcedure, transaction: Transaction);
+                }, splitOn: "PPBDtlRequestGUID", param: new{Stat=dt.Stat,Role = dt.Role, sqlstatement=sql}, commandType: CommandType.StoredProcedure, transaction: Transaction);
 
             return bhdr.Values;
+        }
+
+        public async Task PPBRequestApproveByDept(List<PPBRequestApproveByDeptDto> dtx, string user)
+        {
+            foreach(var dt in dtx){
+                await Connection.QueryAsync("pTrn_PBBRequestApproveByDept", new
+                {
+                    PPBDtlRequestGUID = dt.PPBDtlRequestGUID,
+                    QntyReq = dt.QntyReq,
+                    DeptRemark = dt.DeptRemark,
+                    St = dt.St,
+                    UserID = user,
+                    Computer = dt.Computer
+                }, commandType: CommandType.StoredProcedure, transaction: Transaction);
+            }
+        }
+
+        public async Task PPBSetPurchase(List<PPBSetPurchaserDto> dt, string user)
+        {
+            foreach(var d in dt){
+                await Connection.QueryAsync("UPDATE tTrn_PPBDtlRequest SET PLGUpdatedBy = @user, Status = 3, PLGUpdatedDate = @date, Computer = @Computer, ComputerDate = @date WHERE PPBDtlRequestGUID = @id",
+                                                new {user = user, date = DateTime.Now, Computer = d.Computer, id = d.PPBDtlRequestGUID}, transaction:Transaction);
+            }
         }
 
         public async Task<PPBRequestDto> Save(PPBRequestDto dt)
@@ -87,12 +111,14 @@ namespace MySambu.Api.Repositorys.implements
                 Computer = dt.Computer
             }, commandType: CommandType.StoredProcedure, transaction: Transaction);
 
-            foreach (var dst in dt.PPBRequestDtl)
+            foreach (var dst in dt.PPBItemRequest)
             {
                 await Connection.QueryAsync("pTrn_PPBRequestDtlSave", new
                 {
                     PPBDtlRequestGUID = dst.PPBDtlRequestGUID,
                     PPBGUID = dt.PPBGUID,
+                    BudgetItemGUID = dst.BudgetItemGuid,
+                    ItemID = dst.ItemID,
                     ItemSpecID = dst.ItemSpecID,
                     QntyReq = dst.QntyReq,
                     CurrencyID = dst.CurrencyID,

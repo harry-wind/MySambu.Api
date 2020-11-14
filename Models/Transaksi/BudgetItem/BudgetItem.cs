@@ -18,7 +18,7 @@ namespace MySambu.Api.Models.Transaksi.BudgetItem
         public string Status { get; set; }
         public decimal QntyDept { get; set; }
         public decimal Qnty { get; set; }
-        public string CurrencyId { get; set; }
+        public string CurrencyID { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal ExchangeRateIDR { get; set; }
         public string Remark { get; set; }
