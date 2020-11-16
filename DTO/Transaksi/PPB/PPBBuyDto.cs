@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace MySambu.Api.DTO.Transaksi.PPB
 {
@@ -22,6 +23,7 @@ namespace MySambu.Api.DTO.Transaksi.PPB
         public string Deskripsi { get; set; }
         public short SubCategoryID { get; set; }
         public short CategoryID { get; set; }
+        public string PPBDtlRequestGUID { get; set; }
         public decimal QntyReq { get; set; }
         public string DeptRemark { get; set; }
         public bool RequstUpdateApprovalInd { get; set; }
@@ -31,6 +33,9 @@ namespace MySambu.Api.DTO.Transaksi.PPB
         public string DeptApprovalBy { get; set; }
         public string DeptApprovalRemark { get; set; }
         public DateTime? RequestUpdate { get; set; }
+        public string PLGUpdatedBy { get; set; }
+        public DateTime? PLGUpdatedDate { get; set; }
+        public string PPBDtlBuyGUID { get; set; }
         public short? BuyDNo { get; set; }
         public short? RevisionNo { get; set; }
         public byte? Status { get; set; }
@@ -65,5 +70,7 @@ namespace MySambu.Api.DTO.Transaksi.PPB
         public DateTime? UpdatedDate { get; set; }
         public string NPBBDtlGUID { get; set; }
         public string PPHNo { get; set; }
+        public List<PPBBuySupplierDto> SupplierPrice { get; set; }
+
     }
 }

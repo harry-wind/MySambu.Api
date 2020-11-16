@@ -7,5 +7,6 @@ namespace MySambu.Api.Repositorys.Interfaces.Transaksi
     public interface IPbbBuyRepository
     {
         Task<List<PPBBuyDto>> GetListPPBUy(PPBBuyGetDataDto dt);
+        Task Save(List<PPBBuySaveDto> dt);
     }
 }

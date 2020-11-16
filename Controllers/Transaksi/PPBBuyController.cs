@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using log4net;
@@ -49,6 +50,44 @@ namespace MySambu.Api.Controllers.Transaksi
                 return Ok(new{Status = st});
             }
 
+        }
+
+        [Authorize(Policy="RequireAdmin")]        
+        [HttpPost("Save")]
+        public async Task<IActionResult> Save(List<PPBBuySaveDto> dtx){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            try
+            {
+                foreach(var dt in dtx){
+                    if(dt.PPBDtlBuyGUID == null)
+                        dt.PPBDtlBuyGUID = _uow.GetGUID();
+
+                    dt.UserID = userby;
+                }
+                
+
+                
+                await _uow.PPBBuyRepository.Save(dtx);
+                _uow.Commit();
+
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<List<PPBBuySaveDto>>(dtx);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Info("Succes Save");
+                
+                var st = StTrans.SetSt(200, 0, "Succes");
+                return Ok(new{Status = st, Results = dtx});
+        
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<List<PPBBuySaveDto>>(dtx);
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Error("Error : ", e);
+                return Ok(new{Status = st, Results = dtx});
+            }
         }
 
     }

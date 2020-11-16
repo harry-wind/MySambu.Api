@@ -36,6 +36,7 @@ namespace MySambu.Api.Repositorys.Interfaces
         IPpbRequestRepository PPBRequestRepository {get;}
         IPbbBuyRepository PPBBuyRepository { get; }
         IPPHRepository PPHRepository { get; }
+        INPBBRepository NPBBRepository { get; }
 
         void Commit();
         void Rollback();

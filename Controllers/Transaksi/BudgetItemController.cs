@@ -76,12 +76,12 @@ namespace MySambu.Api.Controllers.Transaksi
         
         [Authorize(Policy="RequireAdmin")]        
         [HttpPost("Save")]
-        public async Task<IActionResult> Save(List<BudgetDtlItem> dt){
+        public async Task<IActionResult> Save(BudgetItemHdrDto dt){
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             try
             {
                 
-                foreach(var dtx in dt){
+                foreach(var dtx in dt.BudgetItems){
                     dtx.CreatedBy = userby;
                     if(dtx.BudgetItemGuid == null)
                         dtx.BudgetItemGuid = _uow.GetGUID();
@@ -90,7 +90,7 @@ namespace MySambu.Api.Controllers.Transaksi
                 await _uow.BudgetItemRepository.SaveBudget(dt);
                 _uow.Commit();
 
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<List<BudgetDtlItem>>(dt);
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetItemHdrDto>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Info("Succes Save");
                 
@@ -103,7 +103,7 @@ namespace MySambu.Api.Controllers.Transaksi
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
 
-                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<List<BudgetDtlItem>>(dt);
+                log4net.LogicalThreadContext.Properties["NewValue"] = Logs.ToJson<BudgetItemHdrDto>(dt);
                 log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st, Results = dt});

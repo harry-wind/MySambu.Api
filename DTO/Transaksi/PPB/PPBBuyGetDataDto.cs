@@ -20,7 +20,7 @@ namespace MySambu.Api.DTO.Transaksi.PPB
         {
             get
             {
-                if (PPBNo != "" && PPBNo != null) return " PPBNo = '" + PPBNo + "'"; return "";
+                if (PPBNo != "" && PPBNo != null) return " A.PPBNo = '" + PPBNo + "'"; return "";
             }
         }
         public string PeriodeQuery
@@ -28,7 +28,7 @@ namespace MySambu.Api.DTO.Transaksi.PPB
             get
             {
                 if (PeriodAwal != null && PeriodAkhir != null)
-                    return " TransDate Between '" + PeriodAwal.Value.ToString("yyyy-MM-01") + "' AND '" + PeriodAkhir.Value + "'";
+                    return " A.TransDate Between '" + PeriodAwal.Value.ToString("yyyy-MM-01") + "' AND '" + PeriodAkhir.Value + "'";
                 return "";
             }
         }
@@ -36,7 +36,7 @@ namespace MySambu.Api.DTO.Transaksi.PPB
         {
             get
             {
-                if (BudgetCategoryID != 0) return " BudgetCategoryID = '" + BudgetCategoryID + "'"; return "";
+                if (BudgetCategoryID != 0) return " A.BudgetCategoryID = '" + BudgetCategoryID + "'"; return "";
             }
         }
         public string DeptQuery
@@ -44,7 +44,7 @@ namespace MySambu.Api.DTO.Transaksi.PPB
             get
             {
                 if (DeptID != 0)
-                    return " DeptID = '" + DeptID + "'";
+                    return " A.DeptID = '" + DeptID + "'";
                 return "";
             }
         }
@@ -53,7 +53,7 @@ namespace MySambu.Api.DTO.Transaksi.PPB
             get
             {
                 if(Purchaser != "")
-                    return " PLGUpdatedBy = '" + Purchaser + "'";
+                    return " A.PLGUpdatedBy = '" + Purchaser + "'";
                 return "";
             }
         }
@@ -62,7 +62,7 @@ namespace MySambu.Api.DTO.Transaksi.PPB
             get
             {
                 if (Item != "" && Item != null)
-                    return "  ItemID LIKE '%" + Item + "%' OR ItemName Like '%" + Item + "%' OR ItemSpecID LIKE '%" + Item + "%'";
+                    return "  B.ItemID LIKE '%" + Item + "%' OR G.ItemName Like '%" + Item + "%' OR B.ItemSpecID LIKE '%" + Item + "%'";
                 return "";
             }
         }
@@ -70,7 +70,7 @@ namespace MySambu.Api.DTO.Transaksi.PPB
         {
             get
             {
-                if (CategoryID != 0) return " CategoryID = " + CategoryID; return "";
+                if (CategoryID != 0) return " G1.CategoryID = " + CategoryID; return "";
             }
         }
         public string SubCategoryQuery
@@ -78,7 +78,7 @@ namespace MySambu.Api.DTO.Transaksi.PPB
             get
             {
                 if (SubCategoryID != 0)
-                    return " SubCategoryID = " + SubCategoryID;
+                    return " G.SubCategoryID = " + SubCategoryID;
                 return "";
             }
         }
@@ -87,7 +87,7 @@ namespace MySambu.Api.DTO.Transaksi.PPB
             get
             {
                 if (SupplierID != "")
-                    return " SupplierID = '" + SupplierID + "'";
+                    return " J.SupplierID = '" + SupplierID + "'";
                 return "";
             }
         }
@@ -96,7 +96,7 @@ namespace MySambu.Api.DTO.Transaksi.PPB
             get
             {
                 if (Status != 0)
-                    return " Status = " + Status;
+                    return " J.Status = " + Status;
                 return "";
             }
         }

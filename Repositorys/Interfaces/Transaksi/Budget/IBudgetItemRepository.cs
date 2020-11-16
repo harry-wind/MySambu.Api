@@ -11,7 +11,7 @@ namespace MySambu.Api.Repositorys.Interfaces
     public interface IBudgetItemRepository
     {
         Task<IEnumerable<BudgetItemHdrDto>> GetAll(string Role, int stat);
-        Task SaveBudget(List<BudgetDtlItem> item);
+        Task SaveBudget(BudgetItemHdrDto item);
         Task ApprovalBudget(List<BudgetItemApprovHdrDto> dt);
     }
 }

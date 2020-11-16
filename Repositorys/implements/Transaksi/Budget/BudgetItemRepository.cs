@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
@@ -78,9 +79,12 @@ namespace MySambu.Api.Repositorys.implements
             return await Connection.QueryAsync<BudgetCategoryTrn>("Select * FROM vw_TrnBudgetTarget where DeptID = @DeptID AND BudgetPeriod = @BudgetPeriod", inp, transaction:Transaction);
         }
 
-        public async Task SaveBudget(List<BudgetDtlItem> item)
+        public async Task SaveBudget(BudgetItemHdrDto item)
         {
-            foreach(var dt in item){
+            await Connection.QueryAsync("UPDATE tTrn_BudgetCategory SET IsComplete = @a, UpdatedBy = @b, UpdatedDate = @c, Computer = @d, ComputerDate = @e WHERE BudgetCatGuid = @id",
+                    new {a = item.IsComplete, b =  item.CreatedBy, c = DateTime.Now, d = item.Computer, e = DateTime.Now, id = item.BudgetCatGuid}, transaction:Transaction);
+                    
+            foreach(var dt in item.BudgetItems){
                 await Connection.QueryAsync("pTrn_BudgetTargetItemSave", new
                 {
                     BudgetItemGuid = dt.BudgetItemGuid,

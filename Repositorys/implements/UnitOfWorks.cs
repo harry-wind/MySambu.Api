@@ -49,6 +49,7 @@ namespace MySambu.Api.Repositorys.implements
         private IPpbRequestRepository _ppbRequestRepository;
         private PPHRepository _pphRepository;
         private IPbbBuyRepository _ppBuyRepository;
+        private INPBBRepository _npbbRepository;
 
         public IAuthRepository AuthRepository {
             get { return _authRepository ?? (_authRepository = new AuthRepository(_transaction)); }
@@ -175,6 +176,10 @@ namespace MySambu.Api.Repositorys.implements
             get { return _ppBuyRepository ?? (_ppBuyRepository = new PPBBuyRepository(_transaction)); }
         }
 
+        public INPBBRepository NPBBRepository {
+            get { return _npbbRepository ?? (_npbbRepository = new NPBBRepository(_transaction)); }
+        }
+
         private void resetRepository()
         {
             resetMasterRepository();   
@@ -188,6 +193,7 @@ namespace MySambu.Api.Repositorys.implements
             _ppbRequestRepository = null;
             _pphRepository = null;
             _ppBuyRepository = null;
+            _npbbRepository = null;
         }
 
         private void resetMasterRepository()
