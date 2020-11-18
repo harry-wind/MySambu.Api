@@ -121,7 +121,7 @@ namespace MySambu.Api.Controllers.Master
         [AllowAnonymous]
         [HttpGet("GetByName/{param}")]
         public async Task<IActionResult> GetByName(string param){
-            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;            
+            // string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;            
             try
             {
                 var dt = await _uow.ItemRepository.GetByName(param);
@@ -134,7 +134,7 @@ namespace MySambu.Api.Controllers.Master
             {
                 var st = StTrans.SetSt(400, 0, e.Message);
                 _uow.Rollback();
-                log4net.LogicalThreadContext.Properties["User"] = userby;
+                // log4net.LogicalThreadContext.Properties["User"] = userby;
                 _log.Error("Error : ", e);
                 return Ok(new{Status = st});
             }

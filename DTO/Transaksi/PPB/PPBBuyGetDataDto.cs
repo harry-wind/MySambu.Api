@@ -1,11 +1,11 @@
 using System;
+using MySambu.Api.helper;
 
 namespace MySambu.Api.DTO.Transaksi.PPB
 {
     public class PPBBuyGetDataDto
     {
         public string PPBNo { get; set; }
-
         public Nullable<DateTime> PeriodAwal { get; set; }
         public Nullable<DateTime> PeriodAkhir { get; set; }
         public long BudgetCategoryID { get; set; } = 0;
@@ -52,8 +52,8 @@ namespace MySambu.Api.DTO.Transaksi.PPB
         {
             get
             {
-                if(Purchaser != "")
-                    return " A.PLGUpdatedBy = '" + Purchaser + "'";
+                if (Purchaser != "")
+                    return " ( J.PLGUpdatedBy = '" + Purchaser + "' )";
                 return "";
             }
         }
@@ -62,7 +62,7 @@ namespace MySambu.Api.DTO.Transaksi.PPB
             get
             {
                 if (Item != "" && Item != null)
-                    return "  B.ItemID LIKE '%" + Item + "%' OR G.ItemName Like '%" + Item + "%' OR B.ItemSpecID LIKE '%" + Item + "%'";
+                    return "  ( B.ItemID LIKE '%" + Item + "%' OR G.ItemName Like '%" + Item + "%' OR B.ItemSpecID LIKE '%" + Item + "%' ) ";
                 return "";
             }
         }
@@ -100,5 +100,41 @@ namespace MySambu.Api.DTO.Transaksi.PPB
                 return "";
             }
         }
+        public string QueryConcat
+        {
+            get
+            {
+                string sql = "";
+
+                sql = SqlQuery.SetCondition(sql, this.PPBNoQuery);
+                sql = SqlQuery.SetCondition(sql, this.PeriodeQuery);
+                sql = SqlQuery.SetCondition(sql, this.BudgetQuery);
+                sql = SqlQuery.SetCondition(sql, this.DeptQuery);
+                sql = SqlQuery.SetCondition(sql, this.PcsQuery);
+                sql = SqlQuery.SetCondition(sql, this.ItemQuery);
+                sql = SqlQuery.SetCondition(sql, this.CategoryQuery);
+                sql = SqlQuery.SetCondition(sql, this.SubCategoryQuery);
+                sql = SqlQuery.SetCondition(sql, this.SupplierQuery);
+                sql = SqlQuery.SetCondition(sql, this.StatusQuery);
+
+                return sql;
+            }
+        }
+        public string PPBBuyQuery
+        {
+            get
+            {
+                return " WHERE B.Status in (3) " + QueryConcat;
+            }
+        }
+        public string PPHGetQuery
+        {
+            get
+            {
+                return " WHERE B.Status in (1, 2, 3)" + QueryConcat;
+            }
+        }
+
+
     }
 }

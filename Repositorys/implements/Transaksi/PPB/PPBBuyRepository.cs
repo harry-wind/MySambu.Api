@@ -16,21 +16,8 @@ namespace MySambu.Api.Repositorys.implements
             
         }
 
-        public async Task<List<PPBBuyDto>> GetListPPBUy(PPBBuyGetDataDto dt)
+        public async Task<List<PPBBuyDto>> GetListPPBUy(string dt)
         {
-            string sql = "";
-            
-            sql = SqlQuery.SetCondition(sql, dt.PPBNoQuery);
-            sql = SqlQuery.SetCondition(sql, dt.PeriodeQuery);
-            sql = SqlQuery.SetCondition(sql, dt.BudgetQuery);
-            sql = SqlQuery.SetCondition(sql, dt.DeptQuery);
-            sql = SqlQuery.SetCondition(sql, dt.PcsQuery);
-            sql = SqlQuery.SetCondition(sql, dt.ItemQuery);
-            sql = SqlQuery.SetCondition(sql, dt.CategoryQuery);
-            sql = SqlQuery.SetCondition(sql, dt.SubCategoryQuery);
-            sql = SqlQuery.SetCondition(sql, dt.SupplierQuery);
-            sql = SqlQuery.SetCondition(sql, dt.StatusQuery);
-
             var bhdr = new Dictionary<string, PPBBuyDto>();
             await Connection.QueryAsync<PPBBuyDto, PPBBuySupplierDto, PPBBuyDto>(
                 "pTrn_GetPPBBuyPLG", (hdr, dtl) => {
@@ -46,7 +33,7 @@ namespace MySambu.Api.Repositorys.implements
                     biHdr.SupplierPrice.Add(dtl);
 
                     return biHdr;
-                }, splitOn: "PriceID", param: new{sqlstatement=sql}, commandType: CommandType.StoredProcedure, transaction: Transaction);
+                }, splitOn: "PriceID", param: new{sqlstatement=dt}, commandType: CommandType.StoredProcedure, transaction: Transaction);
 
             return bhdr.Values.ToList();
             // sql = "Select * FROM vTrn_PPBBuyPLG WHERE RequestStatus in (3,4) " + sql;
@@ -72,7 +59,7 @@ namespace MySambu.Api.Repositorys.implements
                     CurrencyID = d.CurrencyID,
                     UnitPrice = d.UnitPrice,
                     ExchangeRateIDR = d.ExchangeRateIDR,
-                    PPHHdrGUID = d.PPHHdrGUID,
+                    PPHHdrGUID = d.PPHDtlGUID,
                     DeliveryDate = d.DeliveryDate,
                     Remark = d.Remark,
                     Status = d.Status,

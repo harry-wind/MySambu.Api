@@ -73,6 +73,35 @@ namespace MySambu.Api.Controllers.Transaksi
 
         }
 
+        [Authorize(Policy="RequireAdmin")]
+        [HttpGet("GetAllNew/{param}")]
+        public async Task<IActionResult> GetAllNew(int param){
+            string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            string Role = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Role).Value;
+            
+            try
+            {
+                var query = " WHERE DeptID in (SELECT A.StructureID FROM tUtl_StructureManagementTrans A " +
+                                " INNER JOIN tUtl_RoleStructure B ON A.StructureID = B.StructureID WHERE B.RoleId = '" + Role + "' AND A.TransAccesID = 'Budget'";
+
+                var dt = await _uow.BudgetItemRepository.GetBy(query);
+
+                var st = StTrans.SetSt(200, 0, "Succes");
+                return Ok(new{Status = st, Results = dt});
+            }
+            catch (System.Exception e)
+            {
+                var st = StTrans.SetSt(400, 0, e.Message);
+                _uow.Rollback();
+                log4net.LogicalThreadContext.Properties["User"] = userby;
+                _log.Error("Error : ", e);
+                return Ok(new{Status = st});
+            }
+
+        }
+
+        // 
+
         
         [Authorize(Policy="RequireAdmin")]        
         [HttpPost("Save")]

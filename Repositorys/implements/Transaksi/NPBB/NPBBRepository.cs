@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using MySambu.Api.DTO.Transaksi.NPBB;
@@ -36,9 +37,10 @@ namespace MySambu.Api.Repositorys.implements
             return await Connection.QueryAsync<Supplier>("pTrn_NPBBGetSupplier", new {Pcs = dt.Purchaser}, commandType:CommandType.StoredProcedure, transaction:Transaction);
         }
 
-        public Task<List<PPBBuyDto>> GetListPPBUy(NPBBGetDto dt)
+        public async Task<List<PPBBuyDto>> GetListPPBUy(NPBBGetDto dt)
         {
-            throw new System.NotImplementedException();
+            var a = await Connection.QueryAsync<PPBBuyDto>("se");
+            return a.ToList();
         }
     }
 }

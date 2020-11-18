@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Dapper.Contrib.Extensions;
 
 namespace MySambu.Api.Models.Master
@@ -59,6 +60,7 @@ namespace MySambu.Api.Models.Master
         public string ItemIDGroup { get; set; }
         public string P1_ItemID { get; set; }
         public string P2_ItemID { get; set; }
+        public List<ItemSpec> ItemSpec { get; set; }
 
     }
 }

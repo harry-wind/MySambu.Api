@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Dapper;
 using MySambu.Api.DTO.Transaksi.Budget;
 using MySambu.Api.DTO.Transaksi.BudgetItem;
+using MySambu.Api.Models.Master;
 using MySambu.Api.Models.Transaksi;
 using MySambu.Api.Models.Transaksi.BudgetItem;
 using MySambu.Api.Repositorys.Interfaces;
@@ -54,7 +55,6 @@ namespace MySambu.Api.Repositorys.implements
         {
             var bhdr = new Dictionary<string, BudgetItemHdrDto>();
 
-            // string sql = "SELECT * FROM vw_TrnBudgetTarget where BudgetHdrGuid = @id ORDER BY BudgetPeriod DESC, DeptID, BudgetCategoryID ";
             await Connection.QueryAsync<BudgetItemHdrDto, BudgetDtlItem, BudgetItemHdrDto>("pTrn_BudgetItemGetHdr", (hdr, dtl) =>
             {
                 BudgetItemHdrDto biHdr;
@@ -77,6 +77,49 @@ namespace MySambu.Api.Repositorys.implements
         public async Task<IEnumerable<BudgetCategoryTrn>> GetBudgetByDept(BudgetByDeptDto inp)
         {
             return await Connection.QueryAsync<BudgetCategoryTrn>("Select * FROM vw_TrnBudgetTarget where DeptID = @DeptID AND BudgetPeriod = @BudgetPeriod", inp, transaction:Transaction);
+        }
+
+        public async Task<IEnumerable<BudgetItemHdrDto>> GetBy(string statement)
+        {
+            var bhdr = new Dictionary<string, BudgetItemHdrDto>();
+            var bhdtl = new Dictionary<string, BudgetDtlItem>();
+
+
+            await Connection.QueryAsync<BudgetItemHdrDto, BudgetDtlItem, ItemSpecDtl, BudgetItemHdrDto>("pTrn_BudgetItemGetHdrData", (hdr, dtl, subdtl) =>
+            {
+                BudgetItemHdrDto biHdr;
+                BudgetDtlItem biDtl;
+
+                if (!bhdr.TryGetValue(hdr.BudgetCatGuid.ToString(), out biHdr))
+                {
+                    biHdr = hdr;
+                    biHdr.BudgetItems = new List<BudgetDtlItem>();
+                    bhdr.Add(biHdr.BudgetCatGuid, biHdr);
+                }
+
+                    biHdr.BudgetItems.Add(dtl);
+
+                // if(!Try.)
+
+                // // biHdr.BudgetItems.Add(dtl);
+                if(dtl != null){
+                    if (!bhdtl.TryGetValue(dtl.ItemSpecID.ToString(), out biDtl))
+                    {
+                        biDtl = dtl;
+                        biDtl.ItemSpecDtl = new List<ItemSpecDtl>();
+                        bhdtl.Add(biDtl.ItemSpecID, biDtl);
+                        biHdr.BudgetItems.Add(biDtl);
+                    }
+
+                    biDtl.ItemSpecDtl.Add(subdtl);
+                }else{
+                    biHdr.BudgetItems.Add(dtl);
+                }
+
+                return biHdr;
+            }, splitOn: "BudgetItemGuid, ItemSpecDtlID", param: new{sqlstatement=statement}, commandType: CommandType.StoredProcedure, transaction: Transaction);
+           
+            return bhdr.Values;
         }
 
         public async Task SaveBudget(BudgetItemHdrDto item)

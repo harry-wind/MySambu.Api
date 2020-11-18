@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using MySambu.Api.Models.Master;
 
 namespace MySambu.Api.Models.Transaksi.BudgetItem
@@ -11,6 +12,7 @@ namespace MySambu.Api.Models.Transaksi.BudgetItem
         public string ItemName { get; set; }
         public string ItemSpecID { get; set; }
         public string ItemSpec { get; set; }
+        public List<ItemSpecDtl> ItemSpecDtl { get; set; }
         public string UOMPurchaseName { get; set; }
         public decimal QntyConvert { get; set; }
         public string UOMUsageName { get; set; }

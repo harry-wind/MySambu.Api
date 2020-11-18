@@ -24,7 +24,12 @@ namespace MySambu.Api.DTO.Transaksi.BudgetItem
         {
             get
             {
-                return BudgetItems[0] == null ? 0 : BudgetItems.Count;
+                // return BudgetItems[0] == null ? 0 : BudgetItems.Count;
+                if(BudgetItems != null){
+                    return BudgetItems[0] == null ? 0 : BudgetItems.Count;
+                }else{
+                    return 0;
+                }
             }
         }
         public decimal? TotalHarga

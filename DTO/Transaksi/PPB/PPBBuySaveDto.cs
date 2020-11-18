@@ -14,7 +14,7 @@ namespace MySambu.Api.DTO.Transaksi.PPB
         public string CurrencyID { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal ExchangeRateIDR { get; set; }
-        public string PPHHdrGUID { get; set; }
+        public string PPHDtlGUID { get; set; }
         public Nullable<DateTime> DeliveryDate { get; set; } 
         public string Remark { get; set; }
         public short Status { get; set; }

@@ -30,12 +30,11 @@ namespace MySambu.Api.Controllers.Transaksi
 
         [Authorize(Policy="RequireAdmin")]
         [HttpPost("GetBy")]
-        public async Task<IActionResult> GetBy(){
+        public async Task<IActionResult> GetBy(PPBBuyGetDataDto dts){
             string userby = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
-            PPBBuyGetDataDto dts = new PPBBuyGetDataDto();
             try
             {
-                var dt = await _uow.PPBBuyRepository.GetListPPBUy(dts);
+                var dt = await _uow.PPBBuyRepository.GetListPPBUy(dts.PPBBuyQuery);
                 _uow.Commit();
                
                 var st = StTrans.SetSt(200, 0, "Succes");
@@ -64,8 +63,6 @@ namespace MySambu.Api.Controllers.Transaksi
 
                     dt.UserID = userby;
                 }
-                
-
                 
                 await _uow.PPBBuyRepository.Save(dtx);
                 _uow.Commit();

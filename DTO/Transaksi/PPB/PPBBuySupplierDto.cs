@@ -13,6 +13,7 @@ namespace MySambu.Api.DTO.Transaksi.PPB
         public bool ShowIndPrice { get; set; }
         public decimal? UnitPriceIDR { get; set; }
         public string PPHNoPrice { get; set; }
+        public string PPHDtlGUID { get; set; }
         public DateTime? TransDatePrice { get; set; }
         public DateTime? ValidUntil { get; set; }
         public DateTime? DeliveryDatePrice { get; set; }

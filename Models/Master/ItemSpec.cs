@@ -11,6 +11,7 @@ namespace MySambu.Api.Models.Master
         public string ItemSpecID { get; set; }
         public string ItemID { get; set; }
         public string UOM { get; set; }
+        public string UOMPurchase { get; set; }
         public decimal? QntyConvert { get; set; }
         public string Deskripsi { get; set; }
         [Write(false)]
